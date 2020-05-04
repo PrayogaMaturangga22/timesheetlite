@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
+use App\users;
 use App\company;
 
 use App\summarized_table;
-
-use App\users;
-
 use App\user_age;
 use App\user_health;
 use App\user_checkin;
@@ -27,6 +26,13 @@ class PagesController extends Controller
         $users_list = users::all();
 
         return view('users', compact('users_list'));
+    }
+
+    public function company()
+    {
+        $company_list = company::all();
+
+        return view('company', compact('company_list'));
     }
 
     public function index()

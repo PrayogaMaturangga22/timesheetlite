@@ -14,9 +14,9 @@
 Route::get('/', 'PagesController@index');
 
 Route::get('users', 'PagesController@users');
+Route::get('company', 'PagesController@company');
 
-Route::post('users', 'PagesController@users');
-
+// JSON DATA
 Route::post('getusersfilter', 'JSONController@getusersfilter');
-
+Route::post('getcompanyfilter', 'JSONController@getcompanyfilter');
 Route::post('getregisteruserdata', 'JSONController@getregisteruserdata');

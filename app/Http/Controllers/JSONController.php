@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\users;
 use App\staff;
+use App\company;
 use App\registered_user;
 
 use Carbon\carbon;
@@ -34,6 +35,21 @@ class JSONController extends Controller
         }
 
         return json_encode($users_list_filter);
+    }
+
+    public function getcompanyfilter(Request $request){
+
+        $filterby = $request->filterby;
+        $filtervalue = $request->filtervalue;
+        $app_status = $request->app_status;
+        
+        if ($app_status != "ALL") {
+            $company_list_filter = company::where($filterby, 'LIKE', '%' . $filtervalue . '%')->where('app_status', '=', $app_status)->get();
+        }else{
+            $company_list_filter = company::where($filterby, 'LIKE', '%' . $filtervalue . '%')->get();
+        }
+
+        return json_encode($company_list_filter);
     }
 
     public function getregisteruserdata(Request $request){
