@@ -12,7 +12,6 @@
             <li>| Main Dashboard</li>
         </ul>
         <div style="column-span: all;"></div>
-        <button type="button" name="Refresh" onclick="reloadmasterdata()" class="btn btn-success"><i class="i-Refresh text-12"></i> Refresh</button>
     </div>
     <div class="separator-breadcrumb border-top"></div>
     <div class="row">
@@ -46,7 +45,7 @@
         </div>
     </div>        
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card mb-3">
                 <div class="card-body">
                     <h4 class="card-title mb-3">Registered User</h4>
@@ -67,7 +66,37 @@
                         </div>
                     </form>
                     <div style="padding-top: 20px; padding-bottom: 20px;">
-                        <canvas id="LineChart" height="117px"></canvas>
+                        <canvas id="LineChart" height="50px"></canvas>
+                    </div>                
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">Total Subscription Status - Line Chart</h4>
+                    <form onsubmit="LoadSubscriptionChart()">
+                        <div class="row">
+                            <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12" style="padding-top: 5px;">
+                                <p class="text-12 mb-1">Filter By Year</p>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-6 col-xs-6" style="padding: 5px;">
+                                <select id="yearparam" class="form-control" readonly required>
+                                    @for ($i = 0; $i < 100; $i++)
+                                        @php
+                                            $yearloop = 2000 + $i;
+                                        @endphp
+                                        <option for="yearparam" value="{{ $yearloop }}" <?php if($yearloop == $yearparam) { echo "selected"; }?>>{{ $yearloop }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12" style="padding: 5px;">
+                                <button style="submit" class="btn btn-primary">Filter Data</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div style="padding-top: 20px; padding-bottom: 20px;">
+                        <canvas id="LineChart2" height="103px"></canvas>
                     </div>                
                 </div>
             </div>
@@ -75,10 +104,10 @@
         <div class="col-md-4">
             <div class="card mb-3">
                 <div class="card-body">
-                    <h4 class="card-title mb-3">Total Subscription Status & Chart</h4>
+                    <h4 class="card-title mb-3">Total Subscription Status - Pie Chart</h4>
                     <div class="row">
                         <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
-                            <canvas id="PieChart1" height="140px"></canvas>
+                            <canvas id="PieChart1" height="120px"></canvas>
                         </div>                
                         <div class="col-md-12">
                             <div class="table-responsive">
@@ -88,18 +117,12 @@
                                             <th scope="col" style="width: 70%;">Subscription Status</th>
                                             <th scope="col" style="width: 30%;">Total Users</th>
                                         </tr>
-                                        <tr>
-                                            <th style="background-color: green; color: white">Premium Users</th>
-                                            <th style="background-color: green; color: white">{{ $totalpremium }}</th>
-                                        </tr>
-                                        <tr>
-                                            <th style="background-color: red; color: white">Free Users</th>
-                                            <th style="background-color: red; color: white">{{ $totalfree }}</th>
-                                        </tr>
-                                        <tr>
-                                            <th style="background-color: orange; color: white">Triak Users</th>
-                                            <th style="background-color: orange; color: white">{{ $totaltrial }}</th>
-                                        </tr>
+                                        @foreach ($user_subscription_list as $user_subscription)
+                                            <tr>
+                                                <th style="background-color: {{ $user_subscription->color_code }}; color: white">{{ $user_subscription->column_desc }}</th>
+                                                <th style="background-color: {{ $user_subscription->color_code }}; color: white">{{ $user_subscription->total }}</th>
+                                            </tr>
+                                        @endforeach
                                     </thead>
                                 </table>
                             </div>
@@ -124,7 +147,7 @@
                             <canvas id="BarChart3" height="150px"></canvas>
                         </div>                
                         <div class="col-md-3" style="padding-top: 20px; padding-bottom: 20px;">
-                            <h6 class="card-title mb-3">User Sex</h6>
+                            <h6 class="card-title mb-3">User Gender</h6>
                             <canvas id="BarChart4" height="150px"></canvas>
                         </div>                
                         <div class="col-md-3" style="padding-top: 20px; padding-bottom: 20px;">
@@ -191,15 +214,45 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="showModalLabel" aria-hidden="true">
+    <div class="modal fade" id="userscompanyModal" tabindex="-1" role="dialog" aria-labelledby="userscompanyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="showModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="userscompanyModalLabel">List User From Company</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                 </div>
                 <div class="modal-body">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere autem consequuntur unde? Dolore, dolor iusto.</p>
+                    <table style="width: 100%" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%;">Company Name</th>
+                                <th style="width: 70%;"><span id="modalcompany_name"></span></th>
+                            </tr>
+                            <tr>
+                                <th style="width: 30%;">Total Users</th>
+                                <th style="width: 70%;"><span id="modalmember_counter"></span> User(s)</th>
+                            </tr>
+                            <tr>
+                                <th style="width: 30%;">Total Active / Inactive</th>
+                                <th style="width: 70%;"><span id="modalactive_status"></span></th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <h4 class="card-title mb-3">Users List Detail</h4>
+                    <div class="table-responsive">
+                        <table style="width: 100%" class="table table-bordered table-striped" id="companyUsersTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;">No.</th>
+                                    <th style="width: 20%;">User Name</th>
+                                    <th style="width: 20%;">Full Name</th>
+                                    <th style="width: 20%;">Phone Number</th>
+                                    <th style="width: 18%;">Email</th>
+                                    <th style="width: 10%;">Status</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-danger" type="button" data-dismiss="modal">Close</button>
@@ -213,13 +266,67 @@
 <script>
 
     var OpenModalData = function(dataid){
-        
+        var i = 1;
+        var table = document.getElementById('companyUsersTable');
+        var totalactive = 0;
+        var totalinactive = 0;
+
+        $.ajax({
+            type: 'POST',
+            url: 'getcompanydata',
+            data: {dataid: dataid, _token: '{{csrf_token()}}' },
+            success: function (data) {
+                var vdata=JSON.parse(data);
+
+                $('#modalcompany_name').html(vdata.company_name);
+                $('#modalmember_counter').html(vdata.member_counter);
+
+                $(table).DataTable().clear().destroy();
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'getuserscompany',
+                    data: {dataid: dataid, _token: '{{csrf_token()}}' },
+                    success: function (data) {
+                        var vdata_list=JSON.parse(data);
+                        vdata_list.forEach(function(vdata){
+                            if (vdata.user_status == "1"){
+                                var color_user_status = "success";
+                                totalactive += 1;
+                            }else{
+                                var color_user_status = "danger";
+                                totalinactive += 1;
+                            }
+
+                            var newRow = jQuery(
+                                    "<tr>" +
+                                        "<td scope='row' style='text-align: center;'>" + i + "</td>" +
+                                        "<td>" + vdata.username + "</td>" +
+                                        "<td>" + vdata.full_name + "</td>" +
+                                        "<td>" + vdata.phone_number + "</td>" +
+                                        "<td>" + vdata.email + "</td>" +
+                                        "<td><a class='badge badge-" + color_user_status + " m-2' href='#'>Active</a></td>" +                        
+                                    "</tr>");
+                            jQuery(table).append(newRow);
+                            i++;
+                        });
+
+                        $(table).DataTable();
+
+                        $('#modalactive_status').html(totalactive + " User(s) / " + totalinactive + " User(s)");
+                    }
+                });
+            }
+        });
+
+        $('#userscompanyModal').modal('show'); 
     }
 
     $(document).ready(function() {
         $('#companyTable').DataTable();
         InitializeChart();
     })
+
 
     var configdata;
     var LoadRegisterChart = function() {
@@ -273,6 +380,50 @@
 
     }
 
+    var LoadSubscriptionChart = function() {
+        event.preventDefault();
+
+        var yearparam = document.getElementById("yearparam").value;
+
+        var vdatapremium = [];
+        var vdatatrial = [];
+        var vdatafree = [];
+
+        if (yearparam === ""){
+            swal({
+                type: 'error',
+                title: 'From Period Empty!',
+                text: 'Please select valid date!',
+                confirmButtonText: 'Dismiss',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-lg btn-danger'
+            });
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: 'getsubscriptiondata',
+            data: {yearparam: yearparam, _token: '{{csrf_token()}}' },
+            success: function (data) {
+                var vdata_list=JSON.parse(data);
+                vdata_list.forEach(function(vdata){
+                    if (vdata.status == "Premium"){
+                        vdatapremium.push(vdata.total);
+                    }
+                    if (vdata.status == "Free"){
+                        vdatafree.push(vdata.total);
+                    }
+                    if (vdata.status == "Trial"){
+                        vdatatrial.push(vdata.total);
+                    }
+                })
+                addData2(LineChart, vdatapremium, vdatatrial, vdatafree);
+            }
+        });
+
+    }
+
     function addData(chartID, vlabel, vdata) {
         var ctx = document.getElementById('LineChart').getContext('2d');
         var configdata = {
@@ -297,15 +448,70 @@
         myChart.update();
     }
 
+    function addData2(chartID, vdatapremium, vdatatrial, vdatafree) {
+        var ctx = document.getElementById('LineChart2').getContext('2d');
+
+        var configdata = {
+            type: 'line',
+            data: {
+            labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+            datasets: [{
+                label: "Premium",
+                borderColor: "{{ $premium_color }}",
+                pointBorderColor: "{{ $premium_color }}",
+                pointBackgroundColor: "{{ $premium_color }}",
+                pointBorderWidth: 1,
+                fill: false,
+                data: vdatapremium,
+            }, {
+                label: "Free",
+                borderColor: "{{ $free_color }}",
+                pointBorderColor: "{{ $free_color }}",
+                pointBackgroundColor: "{{ $free_color }}",
+                pointBorderWidth: 1,
+                fill: false,
+                data: vdatafree,
+            }, {
+                label: "Trial",
+                borderColor: "{{ $trial_color }}",
+                pointBorderColor: "{{ $trial_color }}",
+                pointBackgroundColor: "{{ $trial_color }}",
+                pointBorderWidth: 1,
+                fill: false,
+                data: vdatatrial,
+            }]
+            },
+            options: {
+                legend: {
+                    position: 'bottom'
+                },
+            }
+        }
+
+        var myChart = new Chart(ctx, configdata);
+        myChart.update();
+    }
+
     function InitializeChart(){
         // CHART COMPANY >< USERS
         var ctx = document.getElementById("PieChart1");
         var data = {
-                labels: ["Premium Users", "Free Users", "Trial Users"],
+                labels: [
+                    @foreach ($user_subscription_list as $user_subscription)
+                        "{{ str_replace('Total ', '', $user_subscription->column_desc) }}" ,
+                    @endforeach
+                ],
                 datasets: [{
-                data: [{{ $totalpremium }}, {{ $totalfree }}, {{ $totaltrial }}],
-                backgroundColor: ["#008000", "#FF0000", "#FFA500"],
-                hoverBackgroundColor: ["#777877", "#777877", "#777877"]
+                data: [
+                    @foreach ($user_subscription_list as $user_subscription)
+                        {{ $user_subscription->total }} ,
+                    @endforeach
+                ],
+                backgroundColor: [
+                    @foreach ($user_subscription_list as $user_subscription)
+                        "{{ $user_subscription->color_code }}" ,
+                    @endforeach
+                ],
             }]
         };
         var PieChart1 = new Chart(ctx, {
@@ -327,7 +533,7 @@
             data: {
                 labels: [
                     @foreach ($user_age_list as $user_age)
-                        "{{ $user_age->age_number }}",
+                        "{{ $user_age->column_desc }}",
                     @endforeach
                 ],
                 datasets: [{
@@ -366,7 +572,7 @@
             data: {
                 labels: [
                     @foreach ($user_checkin_list as $user_checkin)
-                        "{{ $user_checkin->checkin_status }}",
+                        "{{ $user_checkin->column_desc }}",
                     @endforeach
                 ],
                 datasets: [{
@@ -398,26 +604,26 @@
         });
         // END OF CHART CHECK IN        
 
-        // CHART SEX
+        // CHART GENDER
         var ctx = document.getElementById("BarChart4");
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: [
-                    @foreach ($user_sex_list as $user_sex)
-                        "{{ $user_sex->sex }}",
+                    @foreach ($user_gender_list as $user_gender)
+                        "{{ $user_gender->column_desc }}",
                     @endforeach
                 ],
                 datasets: [{
                     label: '# of Total',
                     data: [
-                        @foreach ($user_sex_list as $user_sex)
-                            {{ $user_sex->total }},
+                        @foreach ($user_gender_list as $user_gender)
+                            {{ $user_gender->total }},
                         @endforeach
                     ],
                     backgroundColor: [
-                        @foreach ($user_sex_list as $user_sex)
-                            "{{ $user_sex->color_code }}",
+                        @foreach ($user_gender_list as $user_gender)
+                            "{{ $user_gender->color_code }}",
                         @endforeach
                     ],
                 }]
@@ -435,7 +641,7 @@
                 }
             }
         });
-        // END OF CHART SEX
+        // END OF CHART GENDER
 
         // CHART HEALTH
         var ctx = document.getElementById("BarChart5");
@@ -444,7 +650,7 @@
             data: {
                 labels: [
                     @foreach ($user_health_list as $user_health)
-                        "{{ $user_health->health_status }}",
+                        "{{ $user_health->column_desc }}",
                     @endforeach
                 ],
                 datasets: [{
@@ -498,7 +704,6 @@
                 ]
             }]
             },
-
             options: {
                 legend: {
                     position: 'bottom'
@@ -510,11 +715,72 @@
 
         // END OF REGISTERED USER CHART
 
+        // SUBSCRIPTION LINE CHART
+        var ctx = document.getElementById("LineChart2");
+
+        var configdata = {
+            type: 'line',
+            data: {
+            labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+            datasets: [{
+                label: "Premium",
+                borderColor: "{{ $premium_color }}",
+                pointBorderColor: "{{ $premium_color }}",
+                pointBackgroundColor: "{{ $premium_color }}",
+                pointBorderWidth: 1,
+                fill: false,
+                data: [
+                    @foreach ($registered_user_detail_list as $registered_user_detail)
+                        @if ($registered_user_detail->status == "Premium")
+                            {{ $registered_user_detail->total }},
+                        @endif
+                    @endforeach
+                ]
+            }, {
+                label: "Free",
+                borderColor: "{{ $free_color }}",
+                pointBorderColor: "{{ $free_color }}",
+                pointBackgroundColor: "{{ $free_color }}",
+                pointBorderWidth: 1,
+                fill: false,
+                data: [
+                    @foreach ($registered_user_detail_list as $registered_user_detail)
+                        @if ($registered_user_detail->status == "Free")
+                            {{ $registered_user_detail->total }},
+                        @endif
+                    @endforeach
+                ]
+            }, {
+                label: "Trial",
+                borderColor: "{{ $trial_color }}",
+                pointBorderColor: "{{ $trial_color }}",
+                pointBackgroundColor: "{{ $trial_color }}",
+                pointBorderWidth: 1,
+                fill: false,
+                data: [
+                    @foreach ($registered_user_detail_list as $registered_user_detail)
+                        @if ($registered_user_detail->status == "Trial")
+                            {{ $registered_user_detail->total }},
+                        @endif
+                    @endforeach
+                ]
+            }]
+            },
+            options: {
+                legend: {
+                    position: 'bottom'
+                },
+            }
+        }
+
+        var lineChart = new Chart(ctx, configdata);
+        // END OF SUBSCRIPTION LINE CHART
+
         var ctx = document.getElementById("DoughnutChart1");
         var data = {
             labels: [
                 @foreach ($user_status_list as $user_status)
-                    "{{ $user_status->user_status }}",
+                    "{{ $user_status->column_desc }}",
                 @endforeach
             ],
             datasets: [{
@@ -540,7 +806,7 @@
         var data = {
             labels: [
                 @foreach ($expired_status_list as $expired_status)
-                    "{{ $expired_status->expired_status }}",
+                    "{{ $expired_status->column_desc }}",
                 @endforeach
             ],
             datasets: [{

@@ -16,7 +16,7 @@
     <div class="app-admin-wrap layout-horizontal-bar">
         @include('mainheader')
         @include('horizontalbar')
-        <div class="main-content-wrap d-flex flex-column" style="background-color: #f2fff2;">
+        <div class="main-content-wrap d-flex flex-column" style="background-color: #ededed;">
             <div class="main-content">
                 @yield('content')
             </div>

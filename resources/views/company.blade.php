@@ -90,7 +90,7 @@
                                             <td>{{ $company->contact }}</td>
                                             <td>{{ $company->website }}</td>
                                             <td>{{ $company->password }}</td>
-                                            <td>{{ $company->member_counter }} User(s)</td>
+                                            <td>{{ $company->member_counter }} company(s)</td>
                                             <td>{{ $company->registered_token }}</td>
                                             @if ($company->app_status == "1")
                                                 <td><a class="badge badge-success m-2" href="#">Active</a></td>                            
@@ -110,27 +110,175 @@
         </div>
     </div>
     <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="showModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="showModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="showModalLabel">company Detail</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                 </div>
                 <div class="modal-body">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere autem consequuntur unde? Dolore, dolor iusto.</p>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table style="width: 100%" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 30%;">Company Name</th>
+                                        <th style="width: 70%;"><span id="modalcompany_name"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Address</th>
+                                        <th style="width: 70%;"><span id="modaladdress"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Contact</th>
+                                        <th style="width: 70%;"><span id="modalcontact"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">website</th>
+                                        <th style="width: 70%;"><span id="modalwebsite"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Password</th>
+                                        <th style="width: 70%;"><span id="modalpassword"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Total Users</th>
+                                        <th style="width: 70%;"><span id="modalmember_counter"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Total Active / Inactive</th>
+                                        <th style="width: 70%;"><span id="modalactive_status"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Registered Token</th>
+                                        <th style="width: 70%;"><span id="modalregistered_token"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">App Status</th>
+                                        <th style="width: 70%;"><span id="modalapp_status"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Total Task</th>
+                                        <th style="width: 70%;"><span id="modaltrial_kuota"></span> Month(s)</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Created At</th>
+                                        <th style="width: 70%;"><span id="modalcreated_at"></span></th>
+                                    </tr>
+
+                                    <tr>
+                                        <th style="width: 30%;">Last Updated</th>
+                                        <th style="width: 70%;"><span id="modalupdated_at"></span></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <h4 class="card-title mb-3">Users List Detail</h4>
+                            <div class="table-responsive">
+                                <table style="width: 100%" class="table table-bordered table-striped" id="companyUsersTable">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5%;">No.</th>
+                                            <th style="width: 20%;">User Name</th>
+                                            <th style="width: 20%;">Full Name</th>
+                                            <th style="width: 20%;">Phone Number</th>
+                                            <th style="width: 18%;">Email</th>
+                                            <th style="width: 10%;">Status</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>        
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-danger" type="button" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
 @endsection
 
 @section('script')
 <script>
     $('#companyTable').DataTable();
     var OpenModalData = function(dataid){
+        var i = 1;
+        var table = document.getElementById('companyUsersTable');
+        var totalactive = 0;
+        var totalinactive = 0;
+
+		$.ajax({
+			type: 'POST',
+			url: 'getcompanydata',
+			data: {dataid: dataid, _token: '{{csrf_token()}}' },
+			success: function (data) {
+				var vdata=JSON.parse(data);
+
+                if (vdata.app_status == "1"){
+                    var app_statusname = "Active";
+                }else{
+                    var app_statusname = "Inactive";
+                }
+
+                $('#modalcompany_name').html(vdata.company_name);
+                $('#modaladdress').html(vdata.address);
+                $('#modalcontact').html(vdata.contact);
+                $('#modalwebsite').html(vdata.website);
+                $('#modalpassword').html(vdata.password);
+                $('#modalmember_counter').html(moment(vdata.member_counter).format('DD-MMM-YYYY'));
+                $('#modalregistered_token').html(vdata.registered_token);
+                $('#modalapp_status').html(app_statusname);
+                $('#modaltrial_kuota').html(vdata.trial_kuota);
+                $('#modalcreated_at').html(moment(vdata.created_at).format('DD-MMM-YYYY HH:mm:ss'));
+                $('#modalupdated_at').html(moment(vdata.updated_at).format('DD-MMM-YYYY HH:mm:ss'));
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'getcompanydata',
+                    data: {dataid: dataid, _token: '{{csrf_token()}}' },
+                    success: function (data) {
+                        var vdata=JSON.parse(data);
+
+                        $(table).DataTable().clear().destroy();
+
+                        $.ajax({
+                            type: 'POST',
+                            url: 'getuserscompany',
+                            data: {dataid: dataid, _token: '{{csrf_token()}}' },
+                            success: function (data) {
+                                var vdata_list=JSON.parse(data);
+                                vdata_list.forEach(function(vdata){
+                                    if (vdata.user_status == "1"){
+                                        var color_user_status = "success";
+                                        totalactive += 1;
+                                    }else{
+                                        var color_user_status = "danger";
+                                        totalinactive += 1;
+                                    }
+
+                                    var newRow = jQuery(
+                                            "<tr>" +
+                                                "<td scope='row' style='text-align: center;'>" + i + "</td>" +
+                                                "<td>" + vdata.username + "</td>" +
+                                                "<td>" + vdata.full_name + "</td>" +
+                                                "<td>" + vdata.phone_number + "</td>" +
+                                                "<td>" + vdata.email + "</td>" +
+                                                "<td><a class='badge badge-" + color_user_status + " m-2' href='#'>Active</a></td>" +                        
+                                            "</tr>");
+                                    jQuery(table).append(newRow);
+                                    i++;
+                                });
+
+                                $(table).DataTable();
+
+                                $('#modalactive_status').html(totalactive + " User(s) / " + totalinactive + " User(s)");
+                            }
+                        });
+                    }
+                });
+			}
+		});
+
         $('#showModal').modal('show');
     };
     var Filtercompany = function(e) {
@@ -170,7 +318,7 @@
                                 "<td>" + vdata.contact + "</td>" +
                                 "<td>" + vdata.website + "</td>" +
                                 "<td>" + vdata.password + "</td>" +
-                                "<td>" + vdata.member_counter + " User(s)</td>" +
+                                "<td>" + vdata.member_counter + " company(s)</td>" +
                                 "<td>" + vdata.registered_token + "</td>" +
                                 "<td><a class='badge badge-" + color_app_status + " m-2' href='#'>Active</a></td>" +                        
                                 "<td>" + vdata.trial_kuota + " Month(s)</td>" +

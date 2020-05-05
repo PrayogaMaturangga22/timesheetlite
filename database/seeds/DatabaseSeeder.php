@@ -8,18 +8,12 @@ class DatabaseSeeder extends Seeder
     {
     	DB::statement('SET FOREIGN_KEY_CHECKS=0; ');
 
+        $this->call(Subscription_StatusSeeder::class);
+
         $this->call(CompanySeeder::class);
-
         $this->call(summarized_tableSeeder::class);
-        $this->call(User_AgeSeeder::class);
-        $this->call(User_HealthSeeder::class);
-        $this->call(User_CheckInSeeder::class);
-        $this->call(User_SexSeeder::class);
-
         $this->call(Registered_UserSeeder::class);        
-
-        $this->call(User_StatusSeeder::class);
-        $this->call(Expired_StatusSeeder::class);
+        $this->call(Registered_User_DetailSeeder::class);        
 
         $this->call(PositionSeeder::class);
         $this->call(UsersSeeder::class);

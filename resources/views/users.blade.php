@@ -107,14 +107,114 @@
         </div>
     </div>
     <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="showModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="showModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="showModalLabel">User Detail</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                 </div>
                 <div class="modal-body">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere autem consequuntur unde? Dolore, dolor iusto.</p>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <h4 class="card-title mb-3">From Staff Table</h4>
+                            <table style="width: 100%" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 30%;">Full Name</th>
+                                        <th style="width: 70%;"><span id="modalfull_name"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Company</th>
+                                        <th style="width: 70%;"><span id="modalcompany_name"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Position</th>
+                                        <th style="width: 70%;"><span id="modalposition_name"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Superior</th>
+                                        <th style="width: 70%;"><span id="modalsuperior_name"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Gender</th>
+                                        <th style="width: 70%;"><span id="modalgender"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Address</th>
+                                        <th style="width: 70%;"><span id="modaladdress"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Phone Number</th>
+                                        <th style="width: 70%;"><span id="modalphone_number"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">DOB</th>
+                                        <th style="width: 70%;"><span id="modaldate_of_birth"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">WFH Status</th>
+                                        <th style="width: 70%;"><span id="modalwfh_status"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Health Condition</th>
+                                        <th style="width: 70%;"><span id="modalhealth_condition"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Total Task</th>
+                                        <th style="width: 70%;"><span id="modaltotal_task"></span> Task(s)</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Total Done</th>
+                                        <th style="width: 70%;"><span id="modaltotal_task_done"></span> Task(s)</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Created At</th>
+                                        <th style="width: 70%;"><span id="modalcreated_at"></span></th>
+                                    </tr>
+
+                                    <tr>
+                                        <th style="width: 30%;">Last Updated</th>
+                                        <th style="width: 70%;"><span id="modalupdated_at"></span></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <h4 class="card-title mb-3">From Users Table</h4>
+                            <table style="width: 100%" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 30%;">User Name</th>
+                                        <th style="width: 70%;"><span id="modalusername"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">E-mail</th>
+                                        <th style="width: 70%;"><span id="modalemail"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Password</th>
+                                        <th style="width: 70%;"><span id="modalpassword"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">PIN</th>
+                                        <th style="width: 70%;"><span id="modalpin"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">IMEI</th>
+                                        <th style="width: 70%;"><span id="modalimei"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Device Name</th>
+                                        <th style="width: 70%;"><span id="modaldevice_name"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">User Status</th>
+                                        <th style="width: 70%;"><span id="modaluser_status"></span></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-danger" type="button" data-dismiss="modal">Close</button>
@@ -128,6 +228,50 @@
 <script>
     $('#usersTable').DataTable();
     var OpenModalData = function(dataid){
+		$.ajax({
+			type: 'POST',
+			url: 'getuserdetail',
+			data: {dataid: dataid, _token: '{{csrf_token()}}' },
+			success: function (data) {
+				var vdata=JSON.parse(data);
+
+                if (vdata.user_status == "1"){
+                    var user_statusname = "Active";
+                }else{
+                    var user_statusname = "Inactive";
+                }
+
+                if (vdata.wfh_status == "1"){
+                    var wfh_statusname = "Active";
+                }else{
+                    var wfh_statusname = "Inactive";
+                }
+
+                $('#modalfull_name').html(vdata.full_name);
+                $('#modalcompany_name').html(vdata.company_name);
+                $('#modalposition_name').html(vdata.position_name);
+                $('#modalsuperior_name').html(vdata.superior_name);
+                $('#modalgender').html(vdata.gender);
+                $('#modaladdress').html(vdata.address);
+                $('#modalphone_number').html(vdata.phone_number);
+                $('#modaldate_of_birth').html(moment(vdata.date_of_birth).format('DD-MMM-YYYY'));
+                $('#modalwfh_status').html(wfh_statusname);
+                $('#modalhealth_condition').html(vdata.health_condition);
+                $('#modaltotal_task').html(vdata.total_task);
+                $('#modaltotal_task_done').html(vdata.total_task_done);
+                $('#modalcreated_at').html(moment(vdata.created_at).format('DD-MMM-YYYY HH:mm:ss'));
+                $('#modalupdated_at').html(moment(vdata.updated_at).format('DD-MMM-YYYY HH:mm:ss'));
+
+                $('#modalusername').html(vdata.username);
+                $('#modalemail').html(vdata.email);
+                $('#modalpassword').html(vdata.password);
+                $('#modalpin').html(vdata.pin);
+                $('#modalimei').html(vdata.imei);
+                $('#modaldevice_name').html(vdata.device_name);
+                $('#modaluser_status').html(user_statusname);
+			}
+		});
+
         $('#showModal').modal('show');
     };
     var FilterUsers = function(e) {

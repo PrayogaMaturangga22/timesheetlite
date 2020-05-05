@@ -1,6 +1,6 @@
 <div class="main-header">
     <div class="logo"><a href="{{ url('/') }}"><img src="{{ URL::asset('img/logo.jpg') }}" alt="" /></a></div>
-    <div><a href="{{ url('/') }}"><h4>| Ganeshcom Timesheet Lite</h4></a></div>
+    <div><a href="{{ url('/') }}"><h4>| Timesheet Lite Data Center</h4></a></div>
     <div class="menu-toggle">
         <div></div>
         <div></div>
