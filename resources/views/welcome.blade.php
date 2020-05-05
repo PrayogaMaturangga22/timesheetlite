@@ -4,6 +4,7 @@
 
 @php
     $i = 1;
+    $z = 1;
 @endphp
 
     <div class="breadcrumb">
@@ -13,7 +14,6 @@
         </ul>
         <div style="column-span: all;"></div>
     </div>
-    <div class="separator-breadcrumb border-top"></div>
     <div class="row">
         <div class="col-lg-3 col-md-6 mb-4">
             <div class="p-4 rounded d-flex align-items-center bg-primary text-white"><i class="i-Cool-Guy text-32 mr-3"></i>
@@ -82,9 +82,9 @@
                             </div>
                             <div class="col-lg-2 col-md-3 col-sm-6 col-xs-6" style="padding: 5px;">
                                 <select id="yearparam" class="form-control" readonly required>
-                                    @for ($i = 0; $i < 100; $i++)
+                                    @for ($z = 0; $z < 100; $z++)
                                         @php
-                                            $yearloop = 2000 + $i;
+                                            $yearloop = 2000 + $z;
                                         @endphp
                                         <option for="yearparam" value="{{ $yearloop }}" <?php if($yearloop == $yearparam) { echo "selected"; }?>>{{ $yearloop }}</option>
                                     @endfor
