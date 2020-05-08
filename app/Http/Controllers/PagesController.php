@@ -6,15 +6,19 @@ use Illuminate\Http\Request;
 
 use App\users;
 use App\company;
+use App\pricing;
 
 use App\summarized_table;
 use App\registered_user;
 use App\registered_user_detail;
 
 use App\subscription_status;
+use App\pulldata;
+use App\payment_request;
+use App\payment;
 
 use Carbon\carbon;
-
+use GuzzleHttp\Client;
 use DB;
 
 class PagesController extends Controller
@@ -31,6 +35,45 @@ class PagesController extends Controller
         $company_list = company::all();
 
         return view('company', compact('company_list'));
+    }
+
+    public function paymentrequest()
+    {
+        $company_list = company::all();
+        return view('payment_request', compact('company_list'));
+    }
+
+    public function paymentstatus()
+    {
+        $payment_list = payment::all();
+        $company_list = company::pluck('company_name', 'id');
+		$company_list->prepend('ALL', 'ALL');
+        return view('paymentstatus', compact('payment_list', 'company_list'));
+    }
+
+    public function pulldata()
+    {
+        $pulldata_list = pulldata::all();
+
+        return view('pulldata', compact('pulldata_list'));
+    }
+
+    public function pricing()
+    {
+        $pricing_list = pricing::all();
+        return view('pricing', compact('pricing_list'));
+    }
+
+    public function getData($tablename){
+        $client = new \GuzzleHttp\Client();
+
+        $res = $client->request('GET', 'https://my-json-server.typicode.com/PrayogaMaturangga22/json_db_timesheetlite/' . $tablename);
+
+        $array_list = json_decode($res->getBody()->getContents());
+
+        dd($array_list);
+
+        return redirect('pulldata');
     }
 
     public function index()
@@ -151,7 +194,9 @@ class PagesController extends Controller
         $user_checkin_list = summarized_table::whereRaw("LEFT(column_name, 2) = 'UC'")->get();
         $user_age_list = summarized_table::whereRaw("LEFT(column_name, 2) = 'UA'")->get();
         $user_status_list = summarized_table::whereRaw("LEFT(column_name, 2) = 'US'")->get();
-        $expired_status_list = summarized_table::whereRaw("LEFT(column_name, 2) = 'EP'")->get();
+
+        $expired_status_month_list = summarized_table::whereRaw("LEFT(column_name, 3) = 'EPM'")->get();
+        $expired_status_week_list = summarized_table::whereRaw("LEFT(column_name, 3) = 'EPW'")->get();
 
         $trial_color = subscription_status::where('name', '=', 'Trial')->get();
         $premium_color = subscription_status::where('name', '=', 'Premium')->get();
@@ -180,7 +225,8 @@ class PagesController extends Controller
             'user_subscription_list',
 
             'user_status_list',
-            'expired_status_list',
+            'expired_status_month_list',
+            'expired_status_week_list',
 
             'registered_user_list',
 

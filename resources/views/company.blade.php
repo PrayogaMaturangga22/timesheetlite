@@ -250,9 +250,11 @@
                                 vdata_list.forEach(function(vdata){
                                     if (vdata.user_status == "1"){
                                         var color_user_status = "success";
+                                        var caption_status = "Active";
                                         totalactive += 1;
                                     }else{
                                         var color_user_status = "danger";
+                                        var caption_status = "Inactive";
                                         totalinactive += 1;
                                     }
 
@@ -263,7 +265,7 @@
                                                 "<td>" + vdata.full_name + "</td>" +
                                                 "<td>" + vdata.phone_number + "</td>" +
                                                 "<td>" + vdata.email + "</td>" +
-                                                "<td><a class='badge badge-" + color_user_status + " m-2' href='#'>Active</a></td>" +                        
+                                                "<td><a class='badge badge-" + color_user_status + " m-2' href='#'>" + caption_status + "</a></td>" +                        
                                             "</tr>");
                                     jQuery(table).append(newRow);
                                     i++;
@@ -306,8 +308,10 @@
 				vdata_list.forEach(function(vdata){
                     if (vdata.app_status == "1"){
                         var color_app_status = "success";
+                        var caption_status = "Active";
                     }else{
                         var color_app_status = "danger";
+                        var caption_status = "Inactive";
                     }
 
 					var newRow = jQuery(
@@ -320,7 +324,7 @@
                                 "<td>" + vdata.password + "</td>" +
                                 "<td>" + vdata.member_counter + " company(s)</td>" +
                                 "<td>" + vdata.registered_token + "</td>" +
-                                "<td><a class='badge badge-" + color_app_status + " m-2' href='#'>Active</a></td>" +                        
+                                "<td><a class='badge badge-" + color_app_status + " m-2' href='#'>" + caption_status + "</a></td>" +                        
                                 "<td>" + vdata.trial_kuota + " Month(s)</td>" +
                                 "<td style='text-align: center;'><button type='button' class='btn btn-link btn-sm text-primary mr-2' onclick='OpenModalData(" + vdata.id + ")'><i class='nav-icon i-Files font-weight-bold'></i></button></td>" +
 							"</tr>");

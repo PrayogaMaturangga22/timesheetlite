@@ -28,7 +28,7 @@
                                 <label class="toggle" for="drop-2">Billing</label><a href="#"><i class="nav-icon mr-2 i-Money-2"></i> Billing</a>
                                 <input id="drop-2" type="checkbox" />
                                 <ul>
-                                    <li><a href="{{ url('/pricingmanagement') }}"><i class="nav-icon mr-2 i-Full-Cart"></i><span class="item-name">Pricing Management</span></a></li>
+                                    <li><a href="{{ url('/pricing') }}"><i class="nav-icon mr-2 i-Full-Cart"></i><span class="item-name">Pricing Management</span></a></li>
                                     <li><a href="{{ url('/paymentrequest') }}"><i class="nav-icon mr-2 i-Checkout"></i><span class="item-name">Payment Request</span></a></li>
                                     <li><a href="{{ url('/paymentstatus') }}"><i class="nav-icon mr-2 i-Newspaper"></i><span class="item-name">Payment Status</span></a></li>
                                     <li><a href="{{ url('/invoice') }}"><i class="nav-icon mr-2 i-Receipt-3"></i><span class="item-name">Invoice</span></a></li>
@@ -45,6 +45,7 @@
                                 <ul>
                                     <li><a href="{{ url('/payment') }}"><i class="nav-icon mr-2 i-Money-2"></i><span class="item-name">Payment</span></a></li>
                                     <li><a href="{{ url('/token') }}"><i class="nav-icon mr-2 i-Lock"></i><span class="item-name">Token</span></a></li>
+                                    <li><a href="{{ url('/pulldata') }}"><i class="nav-icon mr-2 i-Big-Data"></i><span class="item-name">Pull Data</span></a></li>
                                 </ul>
                             </div>
                         </div>

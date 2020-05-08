@@ -12,4 +12,6 @@
     <link href="{{ URL::asset('plugins/datepicker/datepicker3.css') }}" rel="stylesheet" >
     <link href="{{ URL::asset('dist-assets/css/plugins/sweetalert2.min.css') }}" rel="stylesheet" />
     <link href="{{ URL::asset('css/custom.css') }}" rel="stylesheet" />
+    <link href="{{ URL::asset('plugins/select2/dist/css/select2.min.css') }}" rel="stylesheet">
+
 </head>

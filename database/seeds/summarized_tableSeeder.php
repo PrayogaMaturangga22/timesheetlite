@@ -54,16 +54,28 @@ class summarized_tableSeeder extends Seeder
 			],
 
 			[
-				'column_name'=>'EP1', 
-				'total'=>'10', 
+				'column_name'=>'EPW1', 
+				'total'=>'3', 
 				'color_code'=>'#FFC107',				
+				'column_desc'=>'This Week', 
+			],
+	    	[
+				'column_name'=>'EPW2', 
+				'total'=>'2', 
+				'color_code'=>'#4CAF50',				
+				'column_desc'=>'Next Week', 
+			],
+			[
+				'column_name'=>'EPM1', 
+				'total'=>'5', 
+				'color_code'=>'#663399',				
 				'column_desc'=>'This Month', 
 			],
 	    	[
-				'column_name'=>'EP2', 
-				'total'=>'1', 
+				'column_name'=>'EPM2', 
+				'total'=>'4', 
 				'color_code'=>'#F44336',				
-				'column_desc'=>'This Week', 
+				'column_desc'=>'Next Month', 
 			],
 
 			[

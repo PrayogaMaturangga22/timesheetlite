@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\users;
 use App\staff;
 use App\company;
+use App\payment_request;
+use App\payment;
 use App\registered_user;
 use Carbon\carbon;
 
@@ -38,6 +40,22 @@ class JSONController extends Controller
         return json_encode($users_list_filter);
     }
 
+    public function getpaymentfilter(Request $request){
+        $company_id = $request->company_id;
+        
+        if ($company_id == "ALL") {
+            $payment_list_filter = payment::leftJoin('company', 'payment.token', '=', 'company.registered_token')->get();
+        }else{
+            $company = company::findOrFail($company_id);
+
+            $token = $company->registered_token;
+    
+            $payment_list_filter = payment::leftJoin('company', 'payment.token', '=', 'company.registered_token')->where('token', '=', $token)->get();
+        }
+
+        return json_encode($payment_list_filter);
+    }
+
     public function getcompanyfilter(Request $request){
 
         $filterby = $request->filterby;
@@ -59,6 +77,14 @@ class JSONController extends Controller
         $company = company::findOrFail($dataid);
 
         return json_encode($company);
+    }
+
+    public function getpayment_request(Request $request){
+        $company_id = $request->dataid;
+
+        $payment_request_list = payment_request::where('company_id', '=', $company_id)->get();
+
+        return json_encode($payment_request_list);
     }
 
     public function getsubscriptiondata(Request $request){

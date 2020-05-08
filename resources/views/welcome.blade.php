@@ -163,7 +163,7 @@
         <div class="col-md-4">
             <div class="card mb-3">
                 <div class="card-body">
-                    <h4 class="card-title mb-3">User Active / Inactive</h4>
+                    <h4 class="card-title mb-3">Company Active / Inactive</h4>
                     <div class="row">
                         <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
                             <canvas id="DoughnutChart1" height="150px"></canvas>
@@ -175,12 +175,31 @@
         <div class="col-md-4">
             <div class="card mb-3">
                 <div class="card-body">
-                    <h4 class="card-title mb-3">User Expired Soon</h4>
-                    <div class="row">
-                        <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
-                            <canvas id="DoughnutChart2" height="150px"></canvas>
-                        </div>                
-                    </div>                
+                    <div class="ul-widget__head">
+                        <div class="ul-widget__head-label">
+                            <h4 class="card-title mb-3">Company Expired Soon</h4>
+                        </div>
+                        <div class="ul-widget__head-toolbar">
+                            <ul class="nav nav-tabs nav-tabs-line nav-tabs-bold ul-widget-nav-tabs-line" role="tablist">
+                                <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#content1" role="tab" aria-selected="true">Weekly</a></li>
+                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#content2" role="tab" aria-selected="false">Monthly</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="ul-widget__body">
+                        <div class="tab-content">
+                            <div class="tab-pane active show" id="content1">
+                                <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
+                                    <canvas id="HorizontalBarChart2" height="150px"></canvas>
+                                </div>                
+                            </div>
+                            <div class="tab-pane" id="content2">
+                                <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
+                                    <canvas id="HorizontalBarChart3" height="150px"></canvas>
+                                </div>                
+                            </div>
+                        </div>
+                    </div>    
                 </div>
             </div>
         </div>
@@ -292,9 +311,11 @@
                         vdata_list.forEach(function(vdata){
                             if (vdata.user_status == "1"){
                                 var color_user_status = "success";
+                                var caption_status = "Active";
                                 totalactive += 1;
                             }else{
                                 var color_user_status = "danger";
+                                var caption_status = "Inactive";
                                 totalinactive += 1;
                             }
 
@@ -305,7 +326,7 @@
                                         "<td>" + vdata.full_name + "</td>" +
                                         "<td>" + vdata.phone_number + "</td>" +
                                         "<td>" + vdata.email + "</td>" +
-                                        "<td><a class='badge badge-" + color_user_status + " m-2' href='#'>Active</a></td>" +                        
+                                        "<td><a class='badge badge-" + color_user_status + " m-2' href='#'>" + caption_status + "</a></td>" +                        
                                     "</tr>");
                             jQuery(table).append(newRow);
                             i++;
@@ -802,31 +823,75 @@
             data: data
         }); // Pie chart
 
-        var ctx = document.getElementById("DoughnutChart2");
-        var data = {
-            labels: [
-                @foreach ($expired_status_list as $expired_status)
-                    "{{ $expired_status->column_desc }}",
-                @endforeach
-            ],
-            datasets: [{
-                data: [
-                    @foreach ($expired_status_list as $expired_status)
-                        {{ $expired_status->total }},
-                    @endforeach
+        var ctx = document.getElementById("HorizontalBarChart2");
+        var mybarChart = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+                labels: [
+                    @foreach ($expired_status_week_list as $expired_status_week)
+                        "{{ $expired_status_week->column_desc }}",
+                    @endforeach                
                 ],
-                backgroundColor: [
-                    @foreach ($expired_status_list as $expired_status)
-                        "{{ $expired_status->color_code }}",
-                    @endforeach
+                datasets: [{
+                    label: '# of Total Expired',
+                    backgroundColor: [
+                        @foreach ($expired_status_week_list as $expired_status_week)
+                            "{{ $expired_status_week->color_code }}",
+                        @endforeach                
+                    ],
+                    data: [
+                        @foreach ($expired_status_week_list as $expired_status_week)
+                            {{ $expired_status_week->total }} ,
+                        @endforeach                
+                        0
+                    ]
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        var ctx = document.getElementById("HorizontalBarChart3");
+        var mybarChart = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+                labels: [
+                    @foreach ($expired_status_month_list as $expired_status_month)
+                        "{{ $expired_status_month->column_desc }}",
+                    @endforeach                
                 ],
-            }]
-        };
-        var DoughnutChart2 = new Chart(ctx, {
-            type: 'doughnut',
-            tooltipFillColor: "rgba(51, 51, 51, 0.55)",
-            data: data
-        }); // Pie chart
+                datasets: [{
+                    label: '# of Total Expired',
+                    backgroundColor: [
+                        @foreach ($expired_status_month_list as $expired_status_month)
+                            "{{ $expired_status_month->color_code }}",
+                        @endforeach                
+                    ],
+                    data: [
+                        @foreach ($expired_status_month_list as $expired_status_month)
+                            {{ $expired_status_month->total }} ,
+                        @endforeach                
+                        0
+                    ]
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
     }
 
     $('.datepicker').datepicker({
