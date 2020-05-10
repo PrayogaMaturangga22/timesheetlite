@@ -13,7 +13,7 @@ class staff extends Model
     protected $fillable = [
 		'user_id', 
 		'company_id', 
-		'position_id', 
+		'position', 
 		'superior_id', 
 		'full_name', 
 		'gender', 
@@ -47,10 +47,5 @@ class staff extends Model
     public function company()
     {
     	return $this->belongsTo('App\company', 'company_id', 'id');
-    }
-
-    public function position()
-    {
-    	return $this->belongsTo('App\position', 'position_id', 'id');
     }
 }

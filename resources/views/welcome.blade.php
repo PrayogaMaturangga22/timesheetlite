@@ -160,50 +160,52 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h4 class="card-title mb-3">Company Active / Inactive</h4>
-                    <div class="row">
-                        <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
-                            <canvas id="DoughnutChart1" height="150px"></canvas>
+        <div class="col-lg-4 col-md-12">
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3">Company Active / Inactive</h4>
+                        <div class="row">
+                            <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
+                                <canvas id="DoughnutChart1" height="150px"></canvas>
+                            </div>                
                         </div>                
-                    </div>                
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="ul-widget__head">
-                        <div class="ul-widget__head-label">
-                            <h4 class="card-title mb-3">Company Expired Soon</h4>
-                        </div>
-                        <div class="ul-widget__head-toolbar">
-                            <ul class="nav nav-tabs nav-tabs-line nav-tabs-bold ul-widget-nav-tabs-line" role="tablist">
-                                <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#content1" role="tab" aria-selected="true">Weekly</a></li>
-                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#content2" role="tab" aria-selected="false">Monthly</a></li>
-                            </ul>
-                        </div>
                     </div>
-                    <div class="ul-widget__body">
-                        <div class="tab-content">
-                            <div class="tab-pane active show" id="content1">
-                                <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
-                                    <canvas id="HorizontalBarChart2" height="150px"></canvas>
-                                </div>                
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="ul-widget__head">
+                            <div class="ul-widget__head-label">
+                                <h4 class="card-title mb-3">Company Expired Soon</h4>
                             </div>
-                            <div class="tab-pane" id="content2">
-                                <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
-                                    <canvas id="HorizontalBarChart3" height="150px"></canvas>
-                                </div>                
+                            <div class="ul-widget__head-toolbar">
+                                <ul class="nav nav-tabs nav-tabs-line nav-tabs-bold ul-widget-nav-tabs-line" role="tablist">
+                                    <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#content1" role="tab" aria-selected="true" id="WeeklyTab">Weekly</a></li>
+                                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#content2" role="tab" aria-selected="false" id="MonthlyTab">Monthly</a></li>
+                                </ul>
                             </div>
                         </div>
-                    </div>    
+                        <div class="ul-widget__body">
+                            <div class="tab-content">
+                                <div class="tab-pane active show" id="content1">
+                                    <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
+                                        <canvas id="HorizontalBarChart2" height="150px"></canvas>
+                                    </div>                
+                                </div>
+                                <div class="tab-pane" id="content2">
+                                    <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
+                                        <canvas id="HorizontalBarChart3" height="150px"></canvas>
+                                    </div>                
+                                </div>
+                            </div>
+                        </div>    
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-lg-8 col-md-12" style="padding-left: 0px;">
             <div class="card mb-3">
                 <div class="card-body">
                     <h4 class="card-title mb-3">Total Company >< Users</h4>
@@ -212,8 +214,10 @@
                             <thead>
                                 <tr>
                                     <th scope="col" style="width: 10%;">No.</th>
-                                    <th scope="col" style="width: 45%;">Company Name</th>
-                                    <th scope="col" style="width: 25%;">Total Users</th>
+                                    <th scope="col" style="width: 15%;">Kode Perusahaan</th>
+                                    <th scope="col" style="width: 30%;">Company Name</th>
+                                    <th scope="col" style="width: 15%;">Total Users</th>
+                                    <th scope="col" style="width: 10%;">App Status</th>
                                     <th scope="col" style="width: 10%;">Show</th>
                                 </tr>
                             </thead>
@@ -221,8 +225,14 @@
                                 @foreach ($company_list as $company)
                                     <tr>
                                         <td scope="row" style="text-align: center;">{{ $i++ }}</td>
+                                        <td>{{ $company->kode_perusahaan }}</td>
                                         <td>{{ $company->company_name }}</td>
-                                        <td style="text-align: right;">{{ $company->member_counter }}</td>
+                                        <td style="text-align: right;">{{ $company->member_counter }} User(s)</td>
+                                        @if ($company->app_status == "1")
+                                            <td><a class="badge badge-success" href="#">Active</td>
+                                        @else
+                                            <td><a class="badge badge-danger" href="#">Inactive</td>
+                                        @endif
                                         <td style="text-align: center;"><button type="button" class="btn btn-link btn-sm text-primary mr-2" onclick="OpenModalData({{ $company->id }})"><i class="nav-icon i-Files font-weight-bold"></i></button></td>
                                     </tr>                                    
                                 @endforeach
@@ -244,6 +254,10 @@
                     <table style="width: 100%" class="table table-bordered">
                         <thead>
                             <tr>
+                                <th style="width: 30%;">Kode Perusahaan</th>
+                                <th style="width: 70%;"><span id="modalkode_perusahaan"></span></th>
+                            </tr>
+                            <tr>
                                 <th style="width: 30%;">Company Name</th>
                                 <th style="width: 70%;"><span id="modalcompany_name"></span></th>
                             </tr>
@@ -252,8 +266,8 @@
                                 <th style="width: 70%;"><span id="modalmember_counter"></span> User(s)</th>
                             </tr>
                             <tr>
-                                <th style="width: 30%;">Total Active / Inactive</th>
-                                <th style="width: 70%;"><span id="modalactive_status"></span></th>
+                                <th style="width: 30%;">Company Status</th>
+                                <th style="width: 70%;"><span id="modalapp_status"></span></th>
                             </tr>
                         </thead>
                     </table>
@@ -266,8 +280,7 @@
                                     <th style="width: 20%;">User Name</th>
                                     <th style="width: 20%;">Full Name</th>
                                     <th style="width: 20%;">Phone Number</th>
-                                    <th style="width: 18%;">Email</th>
-                                    <th style="width: 10%;">Status</th>
+                                    <th style="width: 28%;">Email</th>
                                 </tr>
                             </thead>
                         </table>
@@ -283,12 +296,24 @@
 
 @section('script')
 <script>
+    $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+        var content1 = document.getElementById("content1");
+        var content2 = document.getElementById("content2");
 
+        activeTab = e.target.id;
+
+        if (activeTab == "WeeklyTab"){
+            $("#content1").hide();
+            $("#content1").fadeIn(1000);
+        }else{
+            $("#content2").hide();
+            $("#content2").fadeIn(1000);
+        }
+    })
+    
     var OpenModalData = function(dataid){
         var i = 1;
         var table = document.getElementById('companyUsersTable');
-        var totalactive = 0;
-        var totalinactive = 0;
 
         $.ajax({
             type: 'POST',
@@ -297,8 +322,15 @@
             success: function (data) {
                 var vdata=JSON.parse(data);
 
+                $('#modalkode_perusahaan').html(vdata.kode_perusahaan);
                 $('#modalcompany_name').html(vdata.company_name);
                 $('#modalmember_counter').html(vdata.member_counter);
+
+                if (vdata.app_status == "1"){
+                    $('#modalapp_status').html("Active");
+                }else{
+                    $('#modalapp_status').html("Inactive");
+                }
 
                 $(table).DataTable().clear().destroy();
 
@@ -309,16 +341,6 @@
                     success: function (data) {
                         var vdata_list=JSON.parse(data);
                         vdata_list.forEach(function(vdata){
-                            if (vdata.user_status == "1"){
-                                var color_user_status = "success";
-                                var caption_status = "Active";
-                                totalactive += 1;
-                            }else{
-                                var color_user_status = "danger";
-                                var caption_status = "Inactive";
-                                totalinactive += 1;
-                            }
-
                             var newRow = jQuery(
                                     "<tr>" +
                                         "<td scope='row' style='text-align: center;'>" + i + "</td>" +
@@ -326,15 +348,11 @@
                                         "<td>" + vdata.full_name + "</td>" +
                                         "<td>" + vdata.phone_number + "</td>" +
                                         "<td>" + vdata.email + "</td>" +
-                                        "<td><a class='badge badge-" + color_user_status + " m-2' href='#'>" + caption_status + "</a></td>" +                        
                                     "</tr>");
                             jQuery(table).append(newRow);
                             i++;
                         });
-
                         $(table).DataTable();
-
-                        $('#modalactive_status').html(totalactive + " User(s) / " + totalinactive + " User(s)");
                     }
                 });
             }

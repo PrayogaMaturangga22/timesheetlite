@@ -11,6 +11,7 @@ class company extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
+		'kode_perusahaan', 
 		'company_name', 
 		'address', 
 		'contact', 
@@ -19,7 +20,7 @@ class company extends Model
 		'member_counter', 
 		'registered_token',
 		'app_status',
-		'trial_quota',
+		'trial_kuota',
 		'created_at', 
 		'updated_at', 
     ];

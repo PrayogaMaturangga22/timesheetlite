@@ -20,18 +20,18 @@ class JSONController extends Controller
 
         $filterby = $request->filterby;
         $filtervalue = $request->filtervalue;
-        $user_status = $request->user_status;
+        $app_status = $request->app_status;
         
-        if ($user_status != "ALL") {
-            $users_list_filter = users::
-                leftJoin('staff', 'users.id', '=', 'staff.user_id')
+        if ($app_status != "ALL") {
+            $users_list_filter = users::select('users.*', 'company.app_status', 'staff.phone_number', 'staff.full_name', 'company.company_name')
+                ->leftJoin('staff', 'users.id', '=', 'staff.user_id')
                 ->leftJoin('company', 'staff.company_id', '=', 'company.id')
                 ->where($filterby, 'LIKE', '%' . $filtervalue . '%')
-                ->where('user_status', '=', $user_status)
+                ->where('app_status', '=', $app_status)
                 ->get();
         }else{
-            $users_list_filter = users::
-                leftJoin('staff', 'users.id', '=', 'staff.user_id')
+            $users_list_filter = users::select('users.*', 'company.app_status', 'staff.phone_number', 'staff.full_name', 'company.company_name')
+                ->leftJoin('staff', 'users.id', '=', 'staff.user_id')
                 ->leftJoin('company', 'staff.company_id', '=', 'company.id')
                 ->where($filterby, 'LIKE', '%' . $filtervalue . '%')
                 ->get();
@@ -206,10 +206,9 @@ class JSONController extends Controller
     public function getuserdetail(Request $request){
         $dataid = $request->dataid;
 
-        $users_list_filter = users::select('users.*', 'company.*', 'staff.*', 'position.*', 'superior.full_name as superior_name')
+        $users_list_filter = users::select('users.*', 'company.*', 'staff.*', 'superior.full_name as superior_name')
             ->leftJoin('staff', 'users.id', '=', 'staff.user_id')
             ->leftJoin('company', 'staff.company_id', '=', 'company.id')
-            ->leftJoin('position', 'staff.position_id', '=', 'position.id')
             ->leftJoin('staff as superior', 'staff.superior_id', '=', 'superior.id')
             ->where('users.id', '=', $dataid)
             ->get();

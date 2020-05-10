@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(Registered_User_DetailSeeder::class);       
         $this->call(PullDataSeeder::class);       
         
-        $this->call(PositionSeeder::class);
         $this->call(UsersSeeder::class);
         $this->call(StaffSeeder::class);
 

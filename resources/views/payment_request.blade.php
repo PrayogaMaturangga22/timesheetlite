@@ -45,7 +45,7 @@
                                     <div class="row">
                                         <div class="col-md-4 col-xs-12">
                                             <label class="radio radio-primary">
-                                                <input type="radio" name="app_status" value="ALL" checked><span>ALL Status</span><span class="checkmark"></span>
+                                                <input type="radio" name="app_status" value="ALL" checked><span>ALL</span><span class="checkmark"></span>
                                             </label>
                                         </div>
                                         <div class="col-md-4 col-xs-12">

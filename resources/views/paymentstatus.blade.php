@@ -207,6 +207,7 @@
 			url: 'getpaymentfilter',
 			data: { company_id: company_id, _token: '{{csrf_token()}}' },
 			success: function (data) {
+                console.log(data);
 				var vdata_list=JSON.parse(data);
 				vdata_list.forEach(function(vdata){
                     if (vdata.user_status == "1"){

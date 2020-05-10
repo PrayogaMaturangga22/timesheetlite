@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Carbon\carbon;
 
 class Subscription_StatusSeeder extends Seeder
 {
@@ -11,15 +12,21 @@ class Subscription_StatusSeeder extends Seeder
         $subscription_status = [
             [
                 'name' => 'Premium',
-				'color_code'=>'#663399', 
+				'color_code'=>'#663399',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
                 'name' => 'Free',
-				'color_code'=>'#F44336', 
+				'color_code'=>'#F44336',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
                 'name' => 'Trial',
-				'color_code'=>'#4CAF50', 
+				'color_code'=>'#4CAF50',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
          ];
         DB::table('subscription_status')->insert($subscription_status);

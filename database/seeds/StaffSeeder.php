@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Carbon\carbon;
 
 class StaffSeeder extends Seeder
 {
@@ -12,7 +13,7 @@ class StaffSeeder extends Seeder
 	    	[
 				'user_id'=>'1', 
 				'company_id'=>'1', 
-				'position_id'=> '1', 
+				'position'=> 'Ketua', 
 				'superior_id'=>'0', 
 				'full_name'=>'Maju Sukses Sejahtera 1', 
 				'gender'=>'male', 
@@ -23,12 +24,14 @@ class StaffSeeder extends Seeder
 				'health_condition'=>'Normal', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
-				'total_task_done'=>'0', 
+				'total_task_done'=>'0',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s') 
 			],
 	    	[
 				'user_id'=>'2', 
 				'company_id'=>'1', 
-				'position_id'=> '3', 
+				'position'=> 'Other', 
 				'superior_id'=>'1', 
 				'full_name'=>'Maju Sukses Sejahtera 2', 
 				'gender'=>'female', 
@@ -39,12 +42,14 @@ class StaffSeeder extends Seeder
 				'health_condition'=>'PDP', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
-				'total_task_done'=>'0', 
+				'total_task_done'=>'0',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
 	    	[
 				'user_id'=>'3', 
 				'company_id'=>'1', 
-				'position_id'=> '3', 
+				'position'=> 'Other', 
 				'superior_id'=>'1', 
 				'full_name'=>'Maju Sukses Sejahtera 3', 
 				'gender'=>'male', 
@@ -55,12 +60,14 @@ class StaffSeeder extends Seeder
 				'health_condition'=>'Positif', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
-				'total_task_done'=>'0', 
+				'total_task_done'=>'0',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
 	    	[
 				'user_id'=>'4', 
 				'company_id'=>'2', 
-				'position_id'=> '1', 
+				'position'=> 'Ketua', 
 				'superior_id'=>'0', 
 				'full_name'=>'Megah Karya Surya 1', 
 				'gender'=>'male', 
@@ -71,12 +78,14 @@ class StaffSeeder extends Seeder
 				'health_condition'=>'Normal', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
-				'total_task_done'=>'0', 
+				'total_task_done'=>'0',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
 	    	[
 				'user_id'=>'5', 
 				'company_id'=>'2', 
-				'position_id'=> '3', 
+				'position'=> 'Other', 
 				'superior_id'=>'4', 
 				'full_name'=>'Megah Karya Surya 2', 
 				'gender'=>'female', 
@@ -87,12 +96,14 @@ class StaffSeeder extends Seeder
 				'health_condition'=>'PDP', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
-				'total_task_done'=>'0', 
+				'total_task_done'=>'0',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s') 
 			],
 	    	[
 				'user_id'=>'6', 
 				'company_id'=>'3', 
-				'position_id'=> '1', 
+				'position'=> 'Ketua', 
 				'superior_id'=>'0', 
 				'full_name'=>'Aman Jaya Keramik 1', 
 				'gender'=>'male', 
@@ -103,12 +114,14 @@ class StaffSeeder extends Seeder
 				'health_condition'=>'Normal', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
-				'total_task_done'=>'0', 
+				'total_task_done'=>'0',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
 	    	[
 				'user_id'=>'7', 
 				'company_id'=>'3', 
-				'position_id'=> '3', 
+				'position'=> 'Other', 
 				'superior_id'=>'6', 
 				'full_name'=>'Aman Jaya Keramik 2', 
 				'gender'=>'male', 
@@ -119,12 +132,14 @@ class StaffSeeder extends Seeder
 				'health_condition'=>'Normal', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
-				'total_task_done'=>'0', 
+				'total_task_done'=>'0',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
 	    	[
 				'user_id'=>'8', 
 				'company_id'=>'3', 
-				'position_id'=> '3', 
+				'position'=> 'Other', 
 				'superior_id'=>'6', 
 				'full_name'=>'Aman Jaya Keramik 3', 
 				'gender'=>'female', 
@@ -135,7 +150,9 @@ class StaffSeeder extends Seeder
 				'health_condition'=>'Normal', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
-				'total_task_done'=>'0', 
+				'total_task_done'=>'0',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s') 
 			],
      	];
     	DB::table('staff')->insert($staff);

@@ -18,14 +18,16 @@ use App\payment_request;
 use App\payment;
 
 use Carbon\carbon;
-use GuzzleHttp\Client;
 use DB;
 
 class PagesController extends Controller
 {
     public function users()
     {
-        $users_list = users::all();
+        $users_list = users::select('users.*', 'company.app_status')
+            ->leftJoin('staff', 'staff.user_id', '=', 'users.id')
+            ->leftJoin('company', 'staff.company_id', '=', 'company.id')
+            ->get();
 
         return view('users', compact('users_list'));
     }
@@ -62,18 +64,6 @@ class PagesController extends Controller
     {
         $pricing_list = pricing::all();
         return view('pricing', compact('pricing_list'));
-    }
-
-    public function getData($tablename){
-        $client = new \GuzzleHttp\Client();
-
-        $res = $client->request('GET', 'https://my-json-server.typicode.com/PrayogaMaturangga22/json_db_timesheetlite/' . $tablename);
-
-        $array_list = json_decode($res->getBody()->getContents());
-
-        dd($array_list);
-
-        return redirect('pulldata');
     }
 
     public function index()
@@ -187,7 +177,7 @@ class PagesController extends Controller
 
         $user_subscription_list = summarized_table::whereRaw("LEFT(column_name, 2) = 'UT'")->get();
 
-        $company_list = company::all();
+        $company_list = company::orderBy('member_counter', 'desc')->get();
 
         $user_health_list = summarized_table::whereRaw("LEFT(column_name, 2) = 'UH'")->get();
         $user_gender_list = summarized_table::whereRaw("LEFT(column_name, 2) = 'UG'")->get();

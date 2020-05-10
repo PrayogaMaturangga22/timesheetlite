@@ -45,17 +45,17 @@
                                     <div class="row">
                                         <div class="col-md-4 col-xs-12">
                                             <label class="radio radio-primary">
-                                                <input type="radio" name="user_status" value="ALL" checked><span>ALL Status</span><span class="checkmark"></span>
+                                                <input type="radio" name="app_status" value="ALL" checked><span>ALL</span><span class="checkmark"></span>
                                             </label>
                                         </div>
                                         <div class="col-md-4 col-xs-12">
                                             <label class="radio radio-primary">
-                                                <input type="radio" name="user_status" value="1"><span>Active</span><span class="checkmark"></span>
+                                                <input type="radio" name="app_status" value="1"><span>Active</span><span class="checkmark"></span>
                                             </label>
                                         </div>
                                         <div class="col-md-4 col-xs-12">
                                             <label class="radio radio-primary">
-                                                <input type="radio" name="user_status" value="0"><span>Inactive</span><span class="checkmark"></span>
+                                                <input type="radio" name="app_status" value="0"><span>Inactive</span><span class="checkmark"></span>
                                             </label>
                                         </div>
                                     </div>
@@ -89,7 +89,7 @@
                                             <td>{{ date_format(date_create($users->staff->date_of_birth), "d-M-Y") }}</td>
                                             <td>{{ $users->staff->phone_number }}</td>
                                             <td>{{ $users->email }}</td>
-                                            @if ($users->user_status == "1")
+                                            @if ($users->app_status == "1")
                                                 <td><a class="badge badge-success m-2" href="#">Active</a></td>                            
                                             @else
                                                 <td><a class="badge badge-danger m-2" href="#">Inactive</a></td>                            
@@ -128,7 +128,7 @@
                                     </tr>
                                     <tr>
                                         <th style="width: 30%;">Position</th>
-                                        <th style="width: 70%;"><span id="modalposition_name"></span></th>
+                                        <th style="width: 70%;"><span id="modalposition"></span></th>
                                     </tr>
                                     <tr>
                                         <th style="width: 30%;">Superior</th>
@@ -208,7 +208,11 @@
                                     </tr>
                                     <tr>
                                         <th style="width: 30%;">User Status</th>
-                                        <th style="width: 70%;"><span id="modaluser_status"></span></th>
+                                        <th style="width: 70%;"><span id="modalapp_status"></span></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 30%;">Is Admin</th>
+                                        <th style="width: 70%;"><span id="modalis_admin"></span></th>
                                     </tr>
                                 </thead>
                             </table>
@@ -234,10 +238,10 @@
 			success: function (data) {
 				var vdata=JSON.parse(data);
 
-                if (vdata.user_status == "1"){
-                    var user_statusname = "Active";
+                if (vdata.app_status == "1"){
+                    var app_statusname = "Active";
                 }else{
-                    var user_statusname = "Inactive";
+                    var app_statusname = "Inactive";
                 }
 
                 if (vdata.wfh_status == "1"){
@@ -248,7 +252,7 @@
 
                 $('#modalfull_name').html(vdata.full_name);
                 $('#modalcompany_name').html(vdata.company_name);
-                $('#modalposition_name').html(vdata.position_name);
+                $('#modalposition').html(vdata.position);
                 $('#modalsuperior_name').html(vdata.superior_name);
                 $('#modalgender').html(vdata.gender);
                 $('#modaladdress').html(vdata.address);
@@ -267,7 +271,12 @@
                 $('#modalpin').html(vdata.pin);
                 $('#modalimei').html(vdata.imei);
                 $('#modaldevice_name').html(vdata.device_name);
-                $('#modaluser_status').html(user_statusname);
+                $('#modalapp_status').html(app_statusname);
+                if (vdata.is_admin == "1"){
+                    $('#modalis_admin').html("Yes");
+                }else{
+                    $('#modalis_admin').html("No");
+                }
 			}
 		});
 
@@ -276,7 +285,7 @@
     var FilterUsers = function(e) {
         event.preventDefault();
 
-        var user_status = $('input[name="user_status"]:checked').val();
+        var app_status = $('input[name="app_status"]:checked').val();
 
 		var selector = document.getElementById("filterby");
 		var filterby = selector[selector.selectedIndex].value;
@@ -292,15 +301,15 @@
 		$.ajax({
 			type: 'POST',
 			url: 'getusersfilter',
-			data: {filterby: filterby, filtervalue: filtervalue, user_status: user_status, _token: '{{csrf_token()}}' },
+			data: {filterby: filterby, filtervalue: filtervalue, app_status: app_status, _token: '{{csrf_token()}}' },
 			success: function (data) {
 				var vdata_list=JSON.parse(data);
 				vdata_list.forEach(function(vdata){
-                    if (vdata.user_status == "1"){
-                        var color_user_status = "success";
+                    if (vdata.app_status == "1"){
+                        var color_app_status = "success";
                         var caption_status = "Active";
                     }else{
-                        var color_user_status = "danger";
+                        var color_app_status = "danger";
                         var caption_status = "Inactive";
                     }
 
@@ -313,7 +322,7 @@
                                 "<td>" + moment(vdata.date_of_birth).format('DD-MMM-YYYY') + "</td>" +
                                 "<td>" + vdata.phone_number + "</td>" +
                                 "<td>" + vdata.email + "</td>" +
-                                "<td><a class='badge badge-" + color_user_status + " m-2' href='#'>" + caption_status + "</a></td>" +                        
+                                "<td><a class='badge badge-" + color_app_status + " m-2' href='#'>" + caption_status + "</a></td>" +                        
                                 "<td style='text-align: center;'><button type='button' class='btn btn-link btn-sm text-primary mr-2' onclick='OpenModalData(" + vdata.id + ")'><i class='nav-icon i-Files font-weight-bold'></i></button></td>" +
 							"</tr>");
 					jQuery(table).append(newRow);

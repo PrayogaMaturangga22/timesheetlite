@@ -19,7 +19,7 @@ Route::get('paymentstatus', 'PagesController@paymentstatus');
 Route::get('company', 'PagesController@company');
 Route::get('pricing', 'PagesController@pricing');
 Route::get('pulldata', 'PagesController@pulldata');
-Route::get('getData/{table_name}', 'PagesController@getData');
+Route::post('getData', 'PullDataController@getData');
 
 // JSON DATA
 Route::post('getusersfilter', 'JSONController@getusersfilter');

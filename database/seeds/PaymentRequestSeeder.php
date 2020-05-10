@@ -17,9 +17,9 @@ class PaymentRequestSeeder extends Seeder
                 'sub_total'=>'50000', 
                 'discount'=>'5000', 
                 'grand_total'=>'45000', 
-                'status'=>'1', 
-                'created_at'=> Carbon::now(),
-                'updated_at'=> Carbon::now(),
+                'status'=>'1',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
 	    	[
 				'company_id'=>'1', 
@@ -28,9 +28,9 @@ class PaymentRequestSeeder extends Seeder
                 'sub_total'=>'60000', 
                 'discount'=>'6000', 
                 'grand_total'=>'54000', 
-                'status'=>'1', 
-                'created_at'=> Carbon::now(),
-                'updated_at'=> Carbon::now(),
+                'status'=>'1',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
 	    	[
 				'company_id'=>'2', 
@@ -39,9 +39,9 @@ class PaymentRequestSeeder extends Seeder
                 'sub_total'=>'50000', 
                 'discount'=>'0', 
                 'grand_total'=>'50000', 
-                'status'=>'1', 
-                'created_at'=> Carbon::now(),
-                'updated_at'=> Carbon::now(),
+                'status'=>'1',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
             [
 				'company_id'=>'3', 
@@ -50,9 +50,9 @@ class PaymentRequestSeeder extends Seeder
                 'sub_total'=>'50000', 
                 'discount'=>'5000', 
                 'grand_total'=>'45000', 
-                'status'=>'0', 
-                'created_at'=> Carbon::now(),
-                'updated_at'=> Carbon::now(),
+                'status'=>'0',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
      	];
     	DB::table('payment_request')->insert($payment_request);

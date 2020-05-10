@@ -45,7 +45,7 @@
                                     <div class="row">
                                         <div class="col-md-4 col-xs-12">
                                             <label class="radio radio-primary">
-                                                <input type="radio" name="app_status" value="ALL" checked><span>ALL Status</span><span class="checkmark"></span>
+                                                <input type="radio" name="app_status" value="ALL" checked><span>ALL</span><span class="checkmark"></span>
                                             </label>
                                         </div>
                                         <div class="col-md-4 col-xs-12">
@@ -69,15 +69,15 @@
                                 <thead>
                                     <tr>
                                         <th scope="col" style="width: 3%;">No.</th>
+                                        <th scope="col" style="width: 10%;">Kode</th>
                                         <th scope="col" style="width: 20%;">Company Name</th>
                                         <th scope="col" style="width: 15%;">Address</th>
                                         <th scope="col" style="width: 10%;">Contact</th>
                                         <th scope="col" style="width: 10%;">Website</th>
                                         <th scope="col" style="width: 10%;">Password</th>
-                                        <th scope="col" style="width: 15%;">Member</th>
-                                        <th scope="col" style="width: 15%;">Token</th>
+                                        <th scope="col" style="width: 5%;">Member</th>
                                         <th scope="col" style="width: 5%;">App Status</th>
-                                        <th scope="col" style="width: 5%;">Trial Quota</th>
+                                        <th scope="col" style="width: 10%;">Trial Quota</th>
                                         <th scope="col" style="width: 5%;">Show</th>
                                     </tr>
                                 </thead>
@@ -85,13 +85,13 @@
                                     @foreach ($company_list as $company)
                                         <tr>
                                             <td scope="row" style="text-align: center;">{{ $i++ }}</td>
+                                            <td>{{ $company->kode_perusahaan }}</td>
                                             <td>{{ $company->company_name }}</td>
                                             <td>{{ $company->address }}</td>
                                             <td>{{ $company->contact }}</td>
                                             <td>{{ $company->website }}</td>
                                             <td>{{ $company->password }}</td>
-                                            <td>{{ $company->member_counter }} company(s)</td>
-                                            <td>{{ $company->registered_token }}</td>
+                                            <td>{{ $company->member_counter }} User(s)</td>
                                             @if ($company->app_status == "1")
                                                 <td><a class="badge badge-success m-2" href="#">Active</a></td>                            
                                             @else
@@ -113,7 +113,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="showModalLabel">company Detail</h5>
+                    <h5 class="modal-title" id="showModalLabel">Company Detail</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                 </div>
                 <div class="modal-body">
@@ -121,6 +121,10 @@
                         <div class="col-lg-12">
                             <table style="width: 100%" class="table table-bordered">
                                 <thead>
+                                    <tr>
+                                        <th style="width: 30%;">Kode Perusahaan</th>
+                                        <th style="width: 70%;"><span id="modalkode_perusahaan"></span></th>
+                                    </tr>
                                     <tr>
                                         <th style="width: 30%;">Company Name</th>
                                         <th style="width: 70%;"><span id="modalcompany_name"></span></th>
@@ -146,10 +150,6 @@
                                         <th style="width: 70%;"><span id="modalmember_counter"></span></th>
                                     </tr>
                                     <tr>
-                                        <th style="width: 30%;">Total Active / Inactive</th>
-                                        <th style="width: 70%;"><span id="modalactive_status"></span></th>
-                                    </tr>
-                                    <tr>
                                         <th style="width: 30%;">Registered Token</th>
                                         <th style="width: 70%;"><span id="modalregistered_token"></span></th>
                                     </tr>
@@ -160,15 +160,6 @@
                                     <tr>
                                         <th style="width: 30%;">Total Task</th>
                                         <th style="width: 70%;"><span id="modaltrial_kuota"></span> Month(s)</th>
-                                    </tr>
-                                    <tr>
-                                        <th style="width: 30%;">Created At</th>
-                                        <th style="width: 70%;"><span id="modalcreated_at"></span></th>
-                                    </tr>
-
-                                    <tr>
-                                        <th style="width: 30%;">Last Updated</th>
-                                        <th style="width: 70%;"><span id="modalupdated_at"></span></th>
                                     </tr>
                                 </thead>
                             </table>
@@ -202,10 +193,9 @@
 <script>
     $('#companyTable').DataTable();
     var OpenModalData = function(dataid){
+        var app_status = 0;
         var i = 1;
         var table = document.getElementById('companyUsersTable');
-        var totalactive = 0;
-        var totalinactive = 0;
 
 		$.ajax({
 			type: 'POST',
@@ -220,17 +210,18 @@
                     var app_statusname = "Inactive";
                 }
 
+                $('#modalkode_perusahaan').html(vdata.kode_perusahaan);
                 $('#modalcompany_name').html(vdata.company_name);
                 $('#modaladdress').html(vdata.address);
                 $('#modalcontact').html(vdata.contact);
                 $('#modalwebsite').html(vdata.website);
                 $('#modalpassword').html(vdata.password);
-                $('#modalmember_counter').html(moment(vdata.member_counter).format('DD-MMM-YYYY'));
+                $('#modalmember_counter').html(vdata.member_counter + " User(s)");
                 $('#modalregistered_token').html(vdata.registered_token);
                 $('#modalapp_status').html(app_statusname);
                 $('#modaltrial_kuota').html(vdata.trial_kuota);
-                $('#modalcreated_at').html(moment(vdata.created_at).format('DD-MMM-YYYY HH:mm:ss'));
-                $('#modalupdated_at').html(moment(vdata.updated_at).format('DD-MMM-YYYY HH:mm:ss'));
+
+                app_status = vdata.app_status;
 
                 $.ajax({
                     type: 'POST',
@@ -248,14 +239,12 @@
                             success: function (data) {
                                 var vdata_list=JSON.parse(data);
                                 vdata_list.forEach(function(vdata){
-                                    if (vdata.user_status == "1"){
+                                    if (app_status == "1"){
                                         var color_user_status = "success";
                                         var caption_status = "Active";
-                                        totalactive += 1;
                                     }else{
                                         var color_user_status = "danger";
                                         var caption_status = "Inactive";
-                                        totalinactive += 1;
                                     }
 
                                     var newRow = jQuery(
@@ -272,8 +261,6 @@
                                 });
 
                                 $(table).DataTable();
-
-                                $('#modalactive_status').html(totalactive + " User(s) / " + totalinactive + " User(s)");
                             }
                         });
                     }

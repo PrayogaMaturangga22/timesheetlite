@@ -17,8 +17,9 @@ class users extends Model
 		'pin', 
 		'imei', 
 		'device_name', 
+		'user_status',
 		'created_at',
-		'updated_at',
+		'updated_at'
     ];
     
     protected $hidden = [

@@ -5,14 +5,7 @@
 @yield('additionalcss')
 
 <body class="text-left">
-    <div id="loadingcontainer">
-        <div id="innercontainer">
-            <center>
-                <span id="loaders" class="spinner-glow spinner-glow-dark mr-5"></span>  
-                <h2>Loading...</h2>
-            </center>
-        </div>
-    </div>
+@yield('loading-bar')
     <div class="app-admin-wrap layout-horizontal-bar">
         @include('mainheader')
         @include('horizontalbar')
