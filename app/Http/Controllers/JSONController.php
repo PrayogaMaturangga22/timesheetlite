@@ -10,12 +10,22 @@ use App\company;
 use App\payment_request;
 use App\payment;
 use App\registered_user;
+use App\price_history;
 use Carbon\carbon;
 
 use DB;
 
+use DateTime;
+use DatePeriod;
+use DateInterval;
+
 class JSONController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function getusersfilter(Request $request){
 
         $filterby = $request->filterby;
@@ -23,16 +33,16 @@ class JSONController extends Controller
         $app_status = $request->app_status;
         
         if ($app_status != "ALL") {
-            $users_list_filter = users::select('users.*', 'company.app_status', 'staff.phone_number', 'staff.full_name', 'company.company_name')
-                ->leftJoin('staff', 'users.id', '=', 'staff.user_id')
-                ->leftJoin('company', 'staff.company_id', '=', 'company.id')
+            $users_list_filter = users::select('public_users.*', 'public_company.app_status', 'public_staff.phone_number', 'public_staff.full_name', 'public_company.company_name')
+                ->leftJoin('public_staff', 'public_users.id', '=', 'public_staff.user_id')
+                ->leftJoin('public_company', 'public_staff.company_id', '=', 'public_company.id')
                 ->where($filterby, 'LIKE', '%' . $filtervalue . '%')
                 ->where('app_status', '=', $app_status)
                 ->get();
         }else{
-            $users_list_filter = users::select('users.*', 'company.app_status', 'staff.phone_number', 'staff.full_name', 'company.company_name')
-                ->leftJoin('staff', 'users.id', '=', 'staff.user_id')
-                ->leftJoin('company', 'staff.company_id', '=', 'company.id')
+            $users_list_filter = users::select('public_users.*', 'public_company.app_status', 'public_staff.phone_number', 'public_staff.full_name', 'public_company.company_name')
+                ->leftJoin('public_staff', 'public_users.id', '=', 'public_staff.user_id')
+                ->leftJoin('public_company', 'public_staff.company_id', '=', 'public_company.id')
                 ->where($filterby, 'LIKE', '%' . $filtervalue . '%')
                 ->get();
         }
@@ -44,13 +54,13 @@ class JSONController extends Controller
         $company_id = $request->company_id;
         
         if ($company_id == "ALL") {
-            $payment_list_filter = payment::leftJoin('company', 'payment.token', '=', 'company.registered_token')->get();
+            $payment_list_filter = payment::leftJoin('public_company', 'payment.token', '=', 'public_company.registered_token')->get();
         }else{
             $company = company::findOrFail($company_id);
 
             $token = $company->registered_token;
     
-            $payment_list_filter = payment::leftJoin('company', 'payment.token', '=', 'company.registered_token')->where('token', '=', $token)->get();
+            $payment_list_filter = payment::leftJoin('public_company', 'payment.token', '=', 'public_company.registered_token')->where('token', '=', $token)->get();
         }
 
         return json_encode($payment_list_filter);
@@ -183,10 +193,31 @@ class JSONController extends Controller
         $fromdate = $request->fromdate;
         $todate = $request->todate;
         
-		$fromdate = Carbon::createFromFormat('d-m-Y', $fromdate)->format('Y-m-d');;
-        $todate = Carbon::createFromFormat('d-m-Y', $todate)->format('Y-m-d');;
+		$fromdate = Carbon::createFromFormat('d-m-Y', $fromdate)->format('Y-m-d');
+        $todate = Carbon::createFromFormat('d-m-Y', $todate)->format('Y-m-d');
 
-        $registered_user_list = registered_user::where('date', '>=', $fromdate)->where('date', '<=', $todate)->get();
+        // --insert dummy data for chart no date --
+        
+        $interval = DateInterval::createFromDateString('1 day');
+        $period = new DatePeriod(new DateTime($fromdate), $interval, new DateTime($todate));
+
+        foreach ($period as $date) {
+            $registered_user = registered_user::where('date', '=', $date)->first();
+
+            $data_array = [
+                "date" => $date,
+                "total" => 0
+            ];
+
+            if ($registered_user == null){
+                $registered_user = registered_user::create($data_array);
+            }
+
+        }
+        
+        // -----------------------------------------
+
+        $registered_user_list = registered_user::where('date', '>=', $fromdate)->where('date', '<=', $todate)->orderBy('date', 'asc')->get();
 
         return json_encode($registered_user_list);
     }
@@ -195,8 +226,8 @@ class JSONController extends Controller
         $dataid = $request->dataid;
         
         $users_list_filter = users::
-            leftJoin('staff', 'users.id', '=', 'staff.user_id')
-            ->leftJoin('company', 'staff.company_id', '=', 'company.id')
+            leftJoin('public_staff', 'public_users.id', '=', 'public_staff.user_id')
+            ->leftJoin('public_company', 'public_staff.company_id', '=', 'public_company.id')
             ->where('company_id', '=', $dataid)
             ->get();
 
@@ -206,13 +237,27 @@ class JSONController extends Controller
     public function getuserdetail(Request $request){
         $dataid = $request->dataid;
 
-        $users_list_filter = users::select('users.*', 'company.*', 'staff.*', 'superior.full_name as superior_name')
-            ->leftJoin('staff', 'users.id', '=', 'staff.user_id')
-            ->leftJoin('company', 'staff.company_id', '=', 'company.id')
-            ->leftJoin('staff as superior', 'staff.superior_id', '=', 'superior.id')
-            ->where('users.id', '=', $dataid)
+        $users_list_filter = users::select('public_users.*', 'public_company.*', 'public_staff.*', 'superior.full_name as superior_name')
+            ->leftJoin('public_staff', 'public_users.id', '=', 'public_staff.user_id')
+            ->leftJoin('public_company', 'public_staff.company_id', '=', 'public_company.id')
+            ->leftJoin('public_staff as superior', 'public_staff.superior_id', '=', 'superior.id')
+            ->where('public_users.id', '=', $dataid)
             ->get();
 
         return json_encode($users_list_filter[0]);
+    }
+
+    public function getprice_historyfilter(Request $request){
+        $from_date = $request->from_date;
+        $to_date = $request->to_date;
+
+        $from_date = Carbon::createFromFormat('d-m-Y', $from_date)->format('Y-m-d');
+        $to_date = Carbon::createFromFormat('d-m-Y', $to_date)->format('Y-m-d');
+
+        $to_date = carbon::parse($to_date)->addDays(1);
+
+        $price_history_list = price_history::where('change_date', '>=', $from_date)->where('change_date', '<=', $to_date)->orderBy('change_date', 'desc')->get();
+
+        return json_encode($price_history_list);
     }
 }

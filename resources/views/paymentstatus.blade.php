@@ -221,7 +221,7 @@
 					var newRow = jQuery(
 							"<tr>" +
                                 "<td scope='row' style='text-align: center;'>" + i + "</td>" +
-                                "<td>" + vdata.token + "</td>" +
+                                "<td>" + vdata.token.substring(0, 10) + " ...</td>" +
                                 "<td>" + vdata.company_name + "</td>" +
                                 "<td>" + moment(vdata.payment_start).format('DD-MMM-YYYY') + " s/d " + moment(vdata.payment_end).format('DD-MMM-YYYY') + "</td>" +
                                 "<td>" + moment(vdata.trial_start).format('DD-MMM-YYYY') + " s/d " + moment(vdata.trial_end).format('DD-MMM-YYYY') + "</td>" +
@@ -231,6 +231,9 @@
 					jQuery(table).append(newRow);
                     i++;
 				});
+
+                $(table).DataTable().clear().destroy();
+                $(table).DataTable();
 			}
 		});
         return false;

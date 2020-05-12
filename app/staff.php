@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class staff extends Model
 {
-    protected $table = 'staff';
+    protected $table = 'public_staff';
 
     protected $primaryKey = 'id';
 

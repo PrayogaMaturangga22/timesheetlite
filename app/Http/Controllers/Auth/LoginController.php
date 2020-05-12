@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+
+use Validator;
+use Auth;
 
 class LoginController extends Controller
 {
@@ -25,7 +29,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -35,5 +39,31 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function login(Request $request)
+    {
+        $input = $request->all();
+
+        $validator = Validator::make($input
+		, [
+            'email' => 'required|max:255|email',
+            'password' => 'required',
+            'g-recaptcha-response'  => 'required|captcha',
+		]);
+
+		if ($validator->fails())
+		{
+			return redirect('login')
+					->withInput()
+					->withErrors($validator);
+        }
+        
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            return redirect('/');
+        } else {
+            return redirect()->back();
+        }
+
     }
 }

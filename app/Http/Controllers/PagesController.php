@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 
 use App\users;
 use App\company;
+
 use App\pricing;
+use App\price_history;
 
 use App\summarized_table;
 use App\registered_user;
@@ -19,14 +21,30 @@ use App\payment;
 
 use Carbon\carbon;
 use DB;
+use Auth;
+
+use DateTime;
+use DatePeriod;
+use DateInterval;
 
 class PagesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function users()
     {
-        $users_list = users::select('users.*', 'company.app_status')
-            ->leftJoin('staff', 'staff.user_id', '=', 'users.id')
-            ->leftJoin('company', 'staff.company_id', '=', 'company.id')
+        $access_type = Auth::user()->access_type;
+
+        if ($access_type != "Admin"){
+            return redirect('/');
+        }
+
+        $users_list = users::select('public_users.*', 'public_company.app_status')
+            ->leftJoin('public_staff', 'public_staff.user_id', '=', 'public_users.id')
+            ->leftJoin('public_company', 'public_staff.company_id', '=', 'public_company.id')
             ->get();
 
         return view('users', compact('users_list'));
@@ -34,6 +52,12 @@ class PagesController extends Controller
 
     public function company()
     {
+        $access_type = Auth::user()->access_type;
+
+        if ($access_type != "Admin"){
+            return redirect('/');
+        }
+
         $company_list = company::all();
 
         return view('company', compact('company_list'));
@@ -41,12 +65,25 @@ class PagesController extends Controller
 
     public function paymentrequest()
     {
+        $access_type = Auth::user()->access_type;
+
+        if ($access_type != "Admin"){
+            return redirect('/');
+        }
+
         $company_list = company::all();
+
         return view('payment_request', compact('company_list'));
     }
 
     public function paymentstatus()
     {
+        $access_type = Auth::user()->access_type;
+
+        if ($access_type != "Admin"){
+            return redirect('/');
+        }
+
         $payment_list = payment::all();
         $company_list = company::pluck('company_name', 'id');
 		$company_list->prepend('ALL', 'ALL');
@@ -55,6 +92,12 @@ class PagesController extends Controller
 
     public function pulldata()
     {
+        $access_type = Auth::user()->access_type;
+
+        if ($access_type != "Admin"){
+            return redirect('/');
+        }
+
         $pulldata_list = pulldata::all();
 
         return view('pulldata', compact('pulldata_list'));
@@ -62,22 +105,62 @@ class PagesController extends Controller
 
     public function pricing()
     {
-        $pricing_list = pricing::all();
-        return view('pricing', compact('pricing_list'));
+        $access_type = Auth::user()->access_type;
+
+        if ($access_type != "Admin"){
+            return redirect('/');
+        }
+
+        $fromdate = carbon::now()->addYears(-1);
+        $fromdate = substr($fromdate, 0, 10);
+
+        $todate = carbon::now();
+        $todate = substr($todate, 0, 10);
+
+        $pricing = pricing::first();
+
+        $todate = carbon::parse($todate)->addDays(1);
+        $price_history_list = price_history::where('change_date', '>=', $fromdate)->where('change_date', '<=', $todate)->orderBy('change_date', 'desc')->get();
+
+        $fromdate = date_format(date_create($fromdate), "d-m-Y");
+        $todate = date_format(date_create($todate), "d-m-Y");
+
+        return view('pricing', compact('pricing', 'price_history_list', 'fromdate', 'todate'));
     }
 
     public function index()
     {
-        $fromdate = carbon::now()->addMonths(-1);
+        $fromdate = carbon::now()->addDays(-10);
         $fromdate = substr($fromdate, 0, 10);
 
         $yearparam = carbon::now();
         $yearparam = substr($yearparam, 0, 4);
 
-        $todate = carbon::now();
+        $todate = carbon::now()->addDays(1);
         $todate = substr($todate, 0, 10);
 
-        $registered_user_list = registered_user::where('date', '>=', $fromdate)->where('date', '<=', $todate)->get();
+        // --insert dummy data for chart no date --
+        
+        $interval = DateInterval::createFromDateString('1 day');
+        $period = new DatePeriod(new DateTime($fromdate), $interval, new DateTime($todate));
+
+        foreach ($period as $date) {
+            $registered_user = registered_user::where('date', '=', $date)->first();
+
+            $data_array = [
+                "date" => $date,
+                "total" => 0
+            ];
+
+            if ($registered_user == null){
+                $registered_user = registered_user::create($data_array);
+            }
+
+        }
+        
+        // -----------------------------------------
+
+        $registered_user_list = registered_user::where('date', '>=', $fromdate)->where('date', '<=', $todate)->orderBy('date', 'asc')->get();
 
         $registered_user_detail_list = DB::select(DB::raw("
             SELECT 'January' as 'MonthName', a.name as 'status', IFNULL(SUM(b.total), 0) total
@@ -227,5 +310,27 @@ class PagesController extends Controller
 
             'yearparam'
         ));
+    }
+
+    public function updatePrice(Request $request){
+        $price = $request->price;
+
+        $pricing = pricing::findOrFail('1');
+
+        $from_price = $pricing->price;
+
+        $pricing->price = $price;
+
+        $pricing->update();
+
+        $array = [
+            "from_price" => $from_price,
+            "to_price" => $price,
+            "change_date" => carbon::now(),
+        ];
+
+        $price_history = price_history::create($array);
+
+        return json_encode($price_history);
     }
 }

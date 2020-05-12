@@ -10,6 +10,8 @@ class pricing extends Model
 
     protected $primaryKey = 'id';
 
+    public $timestamps = false;
+
     protected $fillable = [
   		'pricing', 
     ];

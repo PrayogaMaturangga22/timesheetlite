@@ -303,6 +303,8 @@
 			url: 'getusersfilter',
 			data: {filterby: filterby, filtervalue: filtervalue, app_status: app_status, _token: '{{csrf_token()}}' },
 			success: function (data) {
+                $(table).DataTable().clear().destroy();
+
 				var vdata_list=JSON.parse(data);
 				vdata_list.forEach(function(vdata){
                     if (vdata.app_status == "1"){
@@ -328,6 +330,8 @@
 					jQuery(table).append(newRow);
                     i++;
 				});
+
+                $(table).DataTable();
 			}
 		});
         return false;

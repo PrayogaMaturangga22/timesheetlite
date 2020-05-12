@@ -7,7 +7,7 @@ class UsersSeeder extends Seeder
 {
     public function run()
     {
-    	DB::table('users')->truncate();
+    	DB::table('public_users')->truncate();
 
     	$users = [
 	    	[
@@ -108,6 +108,6 @@ class UsersSeeder extends Seeder
 			],
 
      	];
-    	DB::table('users')->insert($users);
+    	DB::table('public_users')->insert($users);
     }
 }

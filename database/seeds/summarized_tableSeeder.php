@@ -105,7 +105,7 @@ class summarized_tableSeeder extends Seeder
 				'column_name'=>'UA1', 
 				'total'=>'2', 
 				'color_code'=>'#4CAF50',
-				'column_desc'=>'19',
+				'column_desc'=>'Less 21',
 				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
 				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
@@ -113,7 +113,7 @@ class summarized_tableSeeder extends Seeder
 				'column_name'=>'UA2', 
 				'total'=>'3', 
 				'color_code'=>'#F44336',				
-				'column_desc'=>'20',
+				'column_desc'=>'21 - 30',
 				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
 				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
@@ -121,7 +121,7 @@ class summarized_tableSeeder extends Seeder
 				'column_name'=>'UA3', 
 				'total'=>'1', 
 				'color_code'=>'#FFC107',
-				'column_desc'=>'22',
+				'column_desc'=>'31 - 40',
 				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
 				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
@@ -129,7 +129,7 @@ class summarized_tableSeeder extends Seeder
 				'column_name'=>'UA4', 
 				'total'=>'2', 
 				'color_code'=>'#663399',
-				'column_desc'=>'24',
+				'column_desc'=>'More 40',
 				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
 				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
@@ -147,14 +147,6 @@ class summarized_tableSeeder extends Seeder
 				'total'=>'2', 
 				'color_code'=>'#F44336',				
 				'column_desc'=>'Not Check In',
-				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-			],
-	    	[
-				'column_name'=>'UC3', 
-				'total'=>'0', 
-				'color_code'=>'#CFE4F3',
-				'column_desc'=>'Break',
 				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
 				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
@@ -193,7 +185,7 @@ class summarized_tableSeeder extends Seeder
 				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
 	    	[
-				'column_name'=>'UG1', 
+				'column_name'=>'UG2', 
 				'total'=>'3', 
 				'color_code'=>'#663399',
 				'column_desc'=>'Female',

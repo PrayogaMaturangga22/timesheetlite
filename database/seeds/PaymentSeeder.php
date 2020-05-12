@@ -27,7 +27,7 @@ class PaymentSeeder extends Seeder
                 'payment_end'=>'2020-07-09',
                 'trial_start'=>'2020-05-08',
                 'trial_end'=>'2020-06-08',
-                'feature_type'=>'premium',
+                'feature_type'=>'free',
                 'payment_duration'=>'monthly',
 				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
 				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
@@ -38,7 +38,7 @@ class PaymentSeeder extends Seeder
                 'payment_end'=>'2020-07-09',
                 'trial_start'=>'2020-05-08',
                 'trial_end'=>'2020-06-08',
-                'feature_type'=>'premium',
+                'feature_type'=>'free',
                 'payment_duration'=>'monthly',
 				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
 				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')

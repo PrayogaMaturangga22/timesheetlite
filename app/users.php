@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class users extends Model
 {
-    protected $table = 'users';
+    protected $table = 'public_users';
 
     protected $primaryKey = 'id';
 

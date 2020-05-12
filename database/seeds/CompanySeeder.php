@@ -7,7 +7,7 @@ class CompanySeeder extends Seeder
 {
     public function run()
     {
-    	DB::table('company')->truncate();
+    	DB::table('public_company')->truncate();
 
     	$company = [
 	    	[
@@ -53,6 +53,6 @@ class CompanySeeder extends Seeder
 				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],
      	];
-    	DB::table('company')->insert($company);
+    	DB::table('public_company')->insert($company);
     }
 }

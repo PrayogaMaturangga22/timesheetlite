@@ -11,27 +11,6 @@ class Registered_User_DetailSeeder extends Seeder
 
     	$Registered_User_detail = [
 	    	[
-				'date'=>'2020-04-01', 
-				'total'=>'2', 
-				'status'=>'Premium',
-				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-			],
-	    	[
-				'date'=>'2020-04-01', 
-				'total'=>'1', 
-				'status'=>'Free',
-				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-				'updated_at' => Carbon::now()->format('Y-m-d H:i:s') 
-			],
-	    	[
-				'date'=>'2020-04-01', 
-				'total'=>'3', 
-				'status'=>'Trial',
-				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-				'updated_at' => Carbon::now()->format('Y-m-d H:i:s') 
-			],
-	    	[
 				'date'=>'2020-05-01', 
 				'total'=>'5', 
 				'status'=>'Premium',

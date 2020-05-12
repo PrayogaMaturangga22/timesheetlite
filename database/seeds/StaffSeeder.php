@@ -7,7 +7,7 @@ class StaffSeeder extends Seeder
 {
     public function run()
     {
-    	DB::table('staff')->truncate();
+    	DB::table('public_staff')->truncate();
 
     	$staff = [
 	    	[
@@ -19,14 +19,14 @@ class StaffSeeder extends Seeder
 				'gender'=>'male', 
 				'address'=>'Denpasar Barat 1', 
 				'phone_number'=>'93458638562', 
-				'date_of_birth'=>'2000-01-01', 
+				'date_of_birth'=>'1987-01-01', 
 				'image_profile'=>'', 
 				'health_condition'=>'Normal', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
 				'total_task_done'=>'0',
-				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-				'updated_at' => Carbon::now()->format('Y-m-d H:i:s') 
+				'created_at' => '2020-05-05',
+				'updated_at' => '2020-05-05' 
 			],
 	    	[
 				'user_id'=>'2', 
@@ -37,14 +37,14 @@ class StaffSeeder extends Seeder
 				'gender'=>'female', 
 				'address'=>'Denpasar Barat 1', 
 				'phone_number'=>'38456386544', 
-				'date_of_birth'=>'2000-01-01', 
+				'date_of_birth'=>'1995-01-01', 
 				'image_profile'=>'', 
 				'health_condition'=>'PDP', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
 				'total_task_done'=>'0',
-				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+				'created_at' => '2020-05-05',
+				'updated_at' => '2020-05-05'
 			],
 	    	[
 				'user_id'=>'3', 
@@ -55,14 +55,14 @@ class StaffSeeder extends Seeder
 				'gender'=>'male', 
 				'address'=>'Denpasar Barat 1', 
 				'phone_number'=>'94872634862', 
-				'date_of_birth'=>'2000-01-01', 
+				'date_of_birth'=>'1994-01-01', 
 				'image_profile'=>'', 
 				'health_condition'=>'Positif', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
 				'total_task_done'=>'0',
-				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+				'created_at' => '2020-05-07',
+				'updated_at' => '2020-05-07'
 			],
 	    	[
 				'user_id'=>'4', 
@@ -73,14 +73,14 @@ class StaffSeeder extends Seeder
 				'gender'=>'male', 
 				'address'=>'Denpasar Timur 1', 
 				'phone_number'=>'93648764345', 
-				'date_of_birth'=>'2000-01-01', 
+				'date_of_birth'=>'1960-01-01', 
 				'image_profile'=>'', 
 				'health_condition'=>'Normal', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
 				'total_task_done'=>'0',
-				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+				'created_at' => '2020-05-07',
+				'updated_at' => '2020-05-07'
 			],
 	    	[
 				'user_id'=>'5', 
@@ -97,8 +97,8 @@ class StaffSeeder extends Seeder
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
 				'total_task_done'=>'0',
-				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-				'updated_at' => Carbon::now()->format('Y-m-d H:i:s') 
+				'created_at' => '2020-05-07',
+				'updated_at' => '2020-05-07' 
 			],
 	    	[
 				'user_id'=>'6', 
@@ -109,14 +109,14 @@ class StaffSeeder extends Seeder
 				'gender'=>'male', 
 				'address'=>'Denpasar Timur 1', 
 				'phone_number'=>'34534534534', 
-				'date_of_birth'=>'2000-01-01', 
+				'date_of_birth'=>'1962-01-01', 
 				'image_profile'=>'', 
 				'health_condition'=>'Normal', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
 				'total_task_done'=>'0',
-				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+				'created_at' => '2020-05-06',
+				'updated_at' => '2020-05-06'
 			],
 	    	[
 				'user_id'=>'7', 
@@ -127,14 +127,14 @@ class StaffSeeder extends Seeder
 				'gender'=>'male', 
 				'address'=>'Denpasar Timur 1', 
 				'phone_number'=>'54456456462', 
-				'date_of_birth'=>'2000-01-01', 
+				'date_of_birth'=>'1986-01-01', 
 				'image_profile'=>'', 
 				'health_condition'=>'Normal', 
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
 				'total_task_done'=>'0',
-				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+				'created_at' => '2020-05-11',
+				'updated_at' => '2020-05-11'
 			],
 	    	[
 				'user_id'=>'8', 
@@ -151,10 +151,10 @@ class StaffSeeder extends Seeder
 				'wfh_status'=>'0', 
 				'total_task'=>'0', 
 				'total_task_done'=>'0',
-				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-				'updated_at' => Carbon::now()->format('Y-m-d H:i:s') 
+				'created_at' => '2020-05-11',
+				'updated_at' => '2020-05-11' 
 			],
      	];
-    	DB::table('staff')->insert($staff);
+    	DB::table('public_staff')->insert($staff);
     }
 }

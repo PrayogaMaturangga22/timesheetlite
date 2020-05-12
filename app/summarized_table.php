@@ -8,11 +8,10 @@ class summarized_table extends Model
 {
     protected $table = 'summarized_table';
 
-    protected $primaryKey = 'id';
-
     protected $fillable = [
       'column_name', 
       'total', 
+      'color_code',
       'column_desc', 
     ];
     

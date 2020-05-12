@@ -225,44 +225,35 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'getcompanydata',
+                    url: 'getuserscompany',
                     data: {dataid: dataid, _token: '{{csrf_token()}}' },
                     success: function (data) {
-                        var vdata=JSON.parse(data);
-
                         $(table).DataTable().clear().destroy();
 
-                        $.ajax({
-                            type: 'POST',
-                            url: 'getuserscompany',
-                            data: {dataid: dataid, _token: '{{csrf_token()}}' },
-                            success: function (data) {
-                                var vdata_list=JSON.parse(data);
-                                vdata_list.forEach(function(vdata){
-                                    if (app_status == "1"){
-                                        var color_user_status = "success";
-                                        var caption_status = "Active";
-                                    }else{
-                                        var color_user_status = "danger";
-                                        var caption_status = "Inactive";
-                                    }
-
-                                    var newRow = jQuery(
-                                            "<tr>" +
-                                                "<td scope='row' style='text-align: center;'>" + i + "</td>" +
-                                                "<td>" + vdata.username + "</td>" +
-                                                "<td>" + vdata.full_name + "</td>" +
-                                                "<td>" + vdata.phone_number + "</td>" +
-                                                "<td>" + vdata.email + "</td>" +
-                                                "<td><a class='badge badge-" + color_user_status + " m-2' href='#'>" + caption_status + "</a></td>" +                        
-                                            "</tr>");
-                                    jQuery(table).append(newRow);
-                                    i++;
-                                });
-
-                                $(table).DataTable();
+                        var vdata_list=JSON.parse(data);
+                        vdata_list.forEach(function(vdata){
+                            if (app_status == "1"){
+                                var color_user_status = "success";
+                                var caption_status = "Active";
+                            }else{
+                                var color_user_status = "danger";
+                                var caption_status = "Inactive";
                             }
+
+                            var newRow = jQuery(
+                                    "<tr>" +
+                                        "<td scope='row' style='text-align: center;'>" + i + "</td>" +
+                                        "<td>" + vdata.username + "</td>" +
+                                        "<td>" + vdata.full_name + "</td>" +
+                                        "<td>" + vdata.phone_number + "</td>" +
+                                        "<td>" + vdata.email + "</td>" +
+                                        "<td><a class='badge badge-" + color_user_status + " m-2' href='#'>" + caption_status + "</a></td>" +                        
+                                    "</tr>");
+                            jQuery(table).append(newRow);
+                            i++;
                         });
+
+                        $(table).DataTable();
                     }
                 });
 			}
@@ -291,6 +282,8 @@
 			url: 'getcompanyfilter',
 			data: {filterby: filterby, filtervalue: filtervalue, app_status: app_status, _token: '{{csrf_token()}}' },
 			success: function (data) {
+                $(table).DataTable().clear().destroy();
+
 				var vdata_list=JSON.parse(data);
 				vdata_list.forEach(function(vdata){
                     if (vdata.app_status == "1"){
@@ -318,6 +311,8 @@
 					jQuery(table).append(newRow);
                     i++;
 				});
+
+                $(table).DataTable();
 			}
 		});
         return false;
