@@ -22,3 +22,10 @@
     margin-top: 10%;
     margin-bottom: 10%;
 }
+
+.short-text { display: none; }
+
+@media (max-width: 600px) {
+    .short-text { display: inline-block; }
+    .full-text { display: none; }
+}

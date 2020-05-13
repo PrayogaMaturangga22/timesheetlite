@@ -66,7 +66,7 @@
                         </div>
                     </form>
                     <div style="padding-top: 20px; padding-bottom: 20px;">
-                        <canvas id="LineChart" height="50px"></canvas>
+                        <canvas id="LineChart" height="50px" style="min-height:300px"></canvas>
                     </div>                
                 </div>
             </div>
@@ -96,7 +96,7 @@
                         </div>
                     </form>
                     <div style="padding-top: 20px; padding-bottom: 20px;">
-                        <canvas id="LineChart2" height="103px"></canvas>
+                        <canvas id="LineChart2" height="103px" style="min-height: 100%"></canvas>
                     </div>                
                 </div>
             </div>
@@ -161,51 +161,47 @@
     </div>
     <div class="row">
         <div class="col-lg-4 col-md-12">
-            <div class="col-md-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h4 class="card-title mb-3">Company Active / Inactive</h4>
-                        <div class="row">
-                            <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
-                                <canvas id="DoughnutChart1" height="150px"></canvas>
-                            </div>                
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">Company Active / Inactive</h4>
+                    <div class="row">
+                        <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
+                            <canvas id="DoughnutChart1" height="150px"></canvas>
                         </div>                
-                    </div>
+                    </div>                
                 </div>
             </div>
-            <div class="col-md-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="ul-widget__head">
-                            <div class="ul-widget__head-label">
-                                <h4 class="card-title mb-3">Company Expired Soon</h4>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="ul-widget__head">
+                        <div class="ul-widget__head-label">
+                            <h4 class="card-title mb-3">Company Expired Soon</h4>
+                        </div>
+                        <div class="ul-widget__head-toolbar">
+                            <ul class="nav nav-tabs nav-tabs-line nav-tabs-bold ul-widget-nav-tabs-line" role="tablist">
+                                <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#content1" role="tab" aria-selected="true" id="WeeklyTab">Weekly</a></li>
+                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#content2" role="tab" aria-selected="false" id="MonthlyTab">Monthly</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="ul-widget__body">
+                        <div class="tab-content">
+                            <div class="tab-pane active show" id="content1">
+                                <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
+                                    <canvas id="HorizontalBarChart2" height="150px"></canvas>
+                                </div>                
                             </div>
-                            <div class="ul-widget__head-toolbar">
-                                <ul class="nav nav-tabs nav-tabs-line nav-tabs-bold ul-widget-nav-tabs-line" role="tablist">
-                                    <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#content1" role="tab" aria-selected="true" id="WeeklyTab">Weekly</a></li>
-                                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#content2" role="tab" aria-selected="false" id="MonthlyTab">Monthly</a></li>
-                                </ul>
+                            <div class="tab-pane" id="content2">
+                                <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
+                                    <canvas id="HorizontalBarChart3" height="150px"></canvas>
+                                </div>                
                             </div>
                         </div>
-                        <div class="ul-widget__body">
-                            <div class="tab-content">
-                                <div class="tab-pane active show" id="content1">
-                                    <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
-                                        <canvas id="HorizontalBarChart2" height="150px"></canvas>
-                                    </div>                
-                                </div>
-                                <div class="tab-pane" id="content2">
-                                    <div class="col-md-12" style="padding-top: 20px; padding-bottom: 20px;">
-                                        <canvas id="HorizontalBarChart3" height="150px"></canvas>
-                                    </div>                
-                                </div>
-                            </div>
-                        </div>    
-                    </div>
+                    </div>    
                 </div>
             </div>
         </div>
-        <div class="col-lg-8 col-md-12" style="padding-left: 0px;">
+        <div class="col-lg-8 col-md-12">
             <div class="card mb-3">
                 <div class="card-body">
                     <h4 class="card-title mb-3">Total Company >< Users</h4>
@@ -481,6 +477,8 @@
                 legend: {
                     position: 'bottom'
                 },
+                responsive: false,
+                maintainAspectRatio: false,
             }
         }
         var myChart = new Chart(ctx, configdata);
@@ -723,7 +721,6 @@
 
         // REGISTERED USER CHART
         var ctx = document.getElementById('LineChart').getContext('2d');
-
         configdata = {
             type: 'line',
             data: {
@@ -747,6 +744,8 @@
                 legend: {
                     position: 'bottom'
                 },
+                responsive: true,
+                maintainAspectRatio: false
             }
         }
 
