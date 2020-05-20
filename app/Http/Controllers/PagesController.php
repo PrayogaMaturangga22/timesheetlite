@@ -19,6 +19,10 @@ use App\pulldata;
 use App\payment_request;
 use App\payment;
 
+use App\contact;
+use App\request_demo;
+use App\subscriber;
+
 use Carbon\carbon;
 use DB;
 use Auth;
@@ -48,6 +52,69 @@ class PagesController extends Controller
             ->get();
 
         return view('users', compact('users_list'));
+    }
+
+    public function contact()
+    {
+        $access_type = Auth::user()->access_type;
+
+        $fromdate = Carbon::now()->year . "-" . substr('00' . Carbon::now()->month, 1, 2) . "-01";
+
+        $todate = Carbon::now();
+        $todate = substr($todate, 0, 10);
+
+        $contact_list = contact::where('contact_date', '>=', $fromdate)->where('contact_date', '<=', $todate)->get();
+
+        $fromdate = date_format(date_create($fromdate), "d-m-Y");
+        $todate = date_format(date_create($todate), "d-m-Y");
+
+        if ($access_type != "Admin"){
+            return redirect('/');
+        }
+
+        return view('contact', compact('contact_list', 'fromdate', 'todate'));
+    }
+
+    public function request_demo()
+    {
+        $access_type = Auth::user()->access_type;
+
+        $fromdate = Carbon::now()->year . "-" . substr('00' . Carbon::now()->month, 1, 2) . "-01";
+
+        $todate = Carbon::now();
+        $todate = substr($todate, 0, 10);
+
+        $request_demo_list = request_demo::where('request_date', '>=', $fromdate)->where('request_date', '<=', $todate)->get();
+
+        $fromdate = date_format(date_create($fromdate), "d-m-Y");
+        $todate = date_format(date_create($todate), "d-m-Y");
+
+        if ($access_type != "Admin"){
+            return redirect('/');
+        }
+
+        return view('request_demo', compact('request_demo_list', 'fromdate', 'todate'));
+    }
+
+    public function subscriber()
+    {
+        $access_type = Auth::user()->access_type;
+
+        $fromdate = Carbon::now()->year . "-" . substr('00' . Carbon::now()->month, 1, 2) . "-01";
+
+        $todate = Carbon::now();
+        $todate = substr($todate, 0, 10);
+
+        $subscriber_list = subscriber::where('subscription_date', '>=', $fromdate)->where('subscription_date', '<=', $todate)->get();
+
+        $fromdate = date_format(date_create($fromdate), "d-m-Y");
+        $todate = date_format(date_create($todate), "d-m-Y");
+
+        if ($access_type != "Admin"){
+            return redirect('/');
+        }
+
+        return view('subscriber', compact('subscriber_list', 'fromdate', 'todate'));
     }
 
     public function company()

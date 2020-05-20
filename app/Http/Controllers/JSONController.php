@@ -13,6 +13,10 @@ use App\registered_user;
 use App\price_history;
 use Carbon\carbon;
 
+use App\contact;
+use App\request_demo;
+use App\subscriber;
+
 use DB;
 
 use DateTime;
@@ -48,6 +52,59 @@ class JSONController extends Controller
         }
 
         return json_encode($users_list_filter);
+    }
+
+    public function getcontactfilter(Request $request){
+
+        $filterby = $request->filterby;
+        $filtervalue = $request->filtervalue;
+        
+        $fromdate = $request->fromdate;
+        $todate = $request->todate;
+
+		$fromdate = Carbon::createFromFormat('d-m-Y', $fromdate)->format('Y-m-d');
+        $todate = Carbon::createFromFormat('d-m-Y', $todate)->format('Y-m-d');
+
+        $contact_list_filter = contact::
+                        where('contact_date', '>=', $fromdate)->
+                        where($filterby, 'LIKE', '%' . $filtervalue . '%')->
+                        where('contact_date', '<=', $todate)->get();
+
+        return json_encode($contact_list_filter);
+    }
+
+    public function getrequest_demofilter(Request $request){
+
+        $filterby = $request->filterby;
+        $filtervalue = $request->filtervalue;
+        
+        $fromdate = $request->fromdate;
+        $todate = $request->todate;
+
+		$fromdate = Carbon::createFromFormat('d-m-Y', $fromdate)->format('Y-m-d');
+        $todate = Carbon::createFromFormat('d-m-Y', $todate)->format('Y-m-d');
+
+        $request_demo_list_filter = request_demo::
+                        where('request_date', '>=', $fromdate)->
+                        where($filterby, 'LIKE', '%' . $filtervalue . '%')->
+                        where('request_date', '<=', $todate)->get();
+
+        return json_encode($request_demo_list_filter);
+    }
+
+    public function getsubscriberfilter(Request $request){
+
+        $fromdate = $request->fromdate;
+        $todate = $request->todate;
+
+		$fromdate = Carbon::createFromFormat('d-m-Y', $fromdate)->format('Y-m-d');
+        $todate = Carbon::createFromFormat('d-m-Y', $todate)->format('Y-m-d');
+
+        $subscriber_list_filter = subscriber::
+                        where('subscription_date', '>=', $fromdate)->
+                        where('subscription_date', '<=', $todate)->get();
+
+        return json_encode($subscriber_list_filter);
     }
 
     public function getpaymentfilter(Request $request){
@@ -234,6 +291,14 @@ class JSONController extends Controller
         return json_encode($users_list_filter);
     }
 
+    public function getrequest_demodetail(Request $request){
+        $dataid = $request->dataid;
+
+        $request_demo_list_filter = request_demo::findOrFail($dataid);
+
+        return json_encode($request_demo_list_filter);
+    }
+
     public function getuserdetail(Request $request){
         $dataid = $request->dataid;
 
@@ -245,6 +310,14 @@ class JSONController extends Controller
             ->get();
 
         return json_encode($users_list_filter[0]);
+    }
+
+    public function getcontactdetail(Request $request){
+        $dataid = $request->dataid;
+
+        $contact_list_filter = contact::findOrFail($dataid);
+
+        return json_encode($contact_list_filter);
     }
 
     public function getprice_historyfilter(Request $request){

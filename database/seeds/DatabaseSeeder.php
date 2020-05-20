@@ -25,6 +25,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call(LoginSeeder::class);
 
+        $this->call(ContactSeeder::class);
+        $this->call(Request_DemoSeeder::class);
+        $this->call(SubscriberSeeder::class);
+
         $this->call(PaymentRequestSeeder::class);
         $this->call(PaymentSeeder::class);
 

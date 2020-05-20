@@ -68,6 +68,27 @@
                             </div>
                         </li>
                     @endif
+                    <li>
+                        <div>
+                            <div>
+                                <label class="toggle">Contact</label><a href="{{ url('/contact') }}"><i class="nav-icon mr-2 i-Find-User"></i> Contact</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <div>
+                                <label class="toggle">Request Demo</label><a href="{{ url('/request_demo') }}"><i class="nav-icon mr-2 i-Idea-2"></i> Request Demo</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <div>
+                                <label class="toggle">Subscriber</label><a href="{{ url('/subscriber') }}"><i class="nav-icon mr-2 i-Tag-4"></i> Subscriber</a>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>

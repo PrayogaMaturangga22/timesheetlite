@@ -65,7 +65,7 @@ class PullDataController extends Controller
                     'updated_at' => carbon::now(),
                 ];
     
-                $company = company::where('registered_token', '=', $data->registered_token)->first();
+                $company = company::where('kode_perusahaan', '=', $data->kode_perusahaan)->first();
     
                 if ($company == null){
                     $company = company::create($data_array);
@@ -109,7 +109,7 @@ class PullDataController extends Controller
                     'updated_at' => carbon::now(),
                 ];
     
-                $users = users::where('username', '=', $data->username)->first();
+                $users = users::where('email', '=', $data->email)->first();
     
                 if ($users == null){
                     $users = users::create($data_array);
@@ -120,28 +120,40 @@ class PullDataController extends Controller
                 }
             }
         }else if($tablename == "staff"){
+
             foreach($data_list as $data){
 
                 // GET ID FROM CODE // COMPANY
 
-                $company_id = company::where('kode_perusahaan', '=', $data->company_id)->first()->id;
+                $company = company::where('kode_perusahaan', '=', $data->company_id)->first();
+
+                $company_id = $company->id;
 
                 // ---------------
 
                 // GET ID FROM EMAIL // SUPERIOR
 
-                if ($data->superior_id == null){
+                if ($data->superior_id == null || $data->superior_id == ""){
                     $superior_id = null;
                 }else{
-                    $superior_id = users::where('email', '=', $data->superior_id)->first()->id;
-                }
+                    $superior_users = users::where('email', '=', $data->superior_id)->first();
 
+                    $superior = staff::where('user_id', '=', $superior_users->id)->first();
+
+                    if ($superior == ""){
+                        $superior_id = null;
+                    }else{
+                        $superior_id = $superior->id;
+                    }
+                }
 
                 // ---------------
 
                 // GET ID FROM EMAIL // USER
 
-                $user_id = users::where('email', '=', $data->user_id)->first()->id;
+                $user = users::where('email', '=', $data->user_id)->first();
+
+                $user_id = $user->id;
 
                 // ---------------
 
@@ -175,7 +187,6 @@ class PullDataController extends Controller
             }
         }
         // ---------------------------------------------
-
 
         // ---- calculate data to show to dashboard ----
 

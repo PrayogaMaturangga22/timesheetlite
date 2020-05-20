@@ -41,7 +41,7 @@ class staff extends Model
 
     public function superior()
     {
-    	return $this->belongsTo('App\users', 'superior_id', 'id');
+    	return $this->belongsTo('App\staff', 'superior_id', 'id');
     }
 
     public function company()
