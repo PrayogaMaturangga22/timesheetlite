@@ -53,7 +53,9 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-
+    'url_services2' => env('URL_SERVICES_DB_TIMESHEET_LITE', 'http://localhost'),
+    'datacenter_api_key' => env('DATACENTER_API_KEY', Str::random(190)),
+    
     'asset_url' => env('ASSET_URL', null),
 
     /*

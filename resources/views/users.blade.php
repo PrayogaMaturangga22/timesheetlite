@@ -23,15 +23,17 @@
                                 <div class="col-lg-12">
                                     <p>Filter Data : </p>
                                 </div>
-                                <div class="col-lg-2 col-md-4 col-sm-6">
-                                    <select name="filterby" id="filterby" class="form-control">
-                                        <option value="full_name" for="filterby" selected>Full Name</option>
-                                        <option value="username" for="filterby">User Name</option>
-                                        <option value="email" for="filterby">E-Mail</option>
-                                        <option value="company_name" for="filterby">Company Name</option>
-                                    </select>
+                                <div class="col-lg-2 col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <select name="filterby" id="filterby" class="form-control">
+                                            <option value="full_name" for="filterby" selected>Full Name</option>
+                                            <option value="username" for="filterby">User Name</option>
+                                            <option value="email" for="filterby">E-Mail</option>
+                                            <option value="company_name" for="filterby">Company Name</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div class="col-lg-3 col-md-4 col-sm-12">
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="filtervalue" placeholder="Insert Keyword">
                                     </div>

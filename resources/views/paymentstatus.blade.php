@@ -24,7 +24,9 @@
                                     <p>Filter Data : </p>
                                 </div>
                                 <div class="col-lg-6 col-md-12 col-sm-6">
-                                    {!! Form::select('company_id', $company_list, 'ALL', ['class'=>'form-control select2', 'placeholder' => 'Select Company . . .', 'required', 'id'=>'company_id'])  !!}
+                                    <div class="form-group">
+                                        {!! Form::select('company_id', $company_list, 'ALL', ['class'=>'form-control select2', 'placeholder' => 'Select Company . . .', 'required', 'id'=>'company_id'])  !!}
+                                    </div>
                                 </div>
                                 <div class="col-lg-3 col-md-12 col-sm-12">
                                     <div class="form-group">

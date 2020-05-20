@@ -25,11 +25,13 @@
                                     <p>Filter Data : </p>
                                 </div>
                                 <div class="col-lg-2 col-md-4 col-sm-6">
-                                    <select name="filterby" id="filterby" class="form-control">
-                                        <option value="company_name" for="filterby" selected>Company Name</option>
-                                        <option value="address" for="filterby">Address</option>
-                                        <option value="contact" for="filterby">Contact</option>
-                                    </select>
+                                    <div class="form-group">
+                                        <select name="filterby" id="filterby" class="form-control">
+                                            <option value="company_name" for="filterby" selected>Company Name</option>
+                                            <option value="address" for="filterby">Address</option>
+                                            <option value="contact" for="filterby">Contact</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="col-lg-3 col-md-4 col-sm-6">
                                     <div class="form-group">

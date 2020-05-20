@@ -34,10 +34,19 @@ class PullDataController extends Controller
 
         $client = new \GuzzleHttp\Client();
 
-        $res = $client->request('GET', 'https://my-json-server.typicode.com/PrayogaMaturangga22/json_db_timesheetlite/' . $tablename);
+        $key = config('app.datacenter_api_key');
+
+        $URL = config('app.url_services2');
+
+        // $res = $client->request('GET', 'https://my-json-server.typicode.com/PrayogaMaturangga22/json_db_timesheetlite/' . $tablename);
+
+        if ($tablename == "users"){
+            $res = $client->request('GET', $URL . '/services/db-timesheet-lite/' . $tablename, ['query' => ['key' => $key]]);
+        }else{
+            $res = $client->request('GET', $URL . '/services/db-timesheet-lite/tb_' . $tablename, ['query' => ['key' => $key]]);
+        }
 
         $data_list = json_decode($res->getBody()->getContents());
-
 
         // --- Insert or Update data to main table ---
         if ($tablename == "company"){
@@ -112,11 +121,35 @@ class PullDataController extends Controller
             }
         }else if($tablename == "staff"){
             foreach($data_list as $data){
+
+                // GET ID FROM CODE // COMPANY
+
+                $company_id = company::where('kode_perusahaan', '=', $data->company_id)->first()->id;
+
+                // ---------------
+
+                // GET ID FROM EMAIL // SUPERIOR
+
+                if ($data->superior_id == null){
+                    $superior_id = null;
+                }else{
+                    $superior_id = users::where('email', '=', $data->superior_id)->first()->id;
+                }
+
+
+                // ---------------
+
+                // GET ID FROM EMAIL // USER
+
+                $user_id = users::where('email', '=', $data->user_id)->first()->id;
+
+                // ---------------
+
                 $data_array = [
-                    'user_id' => $data->user_id,
-                    'company_id' => $data->company_id,
+                    'user_id' => $user_id,
+                    'company_id' => $company_id,
                     'position' => $data->position,
-                    'superior_id' => $data->superior_id,
+                    'superior_id' => $superior_id,
                     'full_name' => $data->full_name,
                     'gender' => $data->gender,
                     'address' => $data->address,
