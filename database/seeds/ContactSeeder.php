@@ -12,18 +12,16 @@ class ContactSeeder extends Seeder
     	$contact = [
 	    	[
 				'contact_date'=>'2020-05-18', 
-				'first_name'=>'Users', 
-				'last_name'=>'Message 1', 
+				'name'=>'Users Message 1', 
 				'email'=>'usersmessage1@gmail.com', 
-				'title'=>'Aplikasi Mantap ini', 
+				'phone_number'=>'9384593458943', 
 				'message'=>'Aplikasi kamu sangat mantap saya suka', 
 			],
 	    	[
 				'contact_date'=>'2020-05-15', 
-				'first_name'=>'Users', 
-				'last_name'=>'Message 2', 
+				'name'=>'Users Message 2', 
 				'email'=>'usersmessage2@gmail.com', 
-				'title'=>'Aplikasi Saya Sangat Rekomendasi', 
+				'phone_number'=>'9384593458943', 
 				'message'=>'Saya akan merekomendasikan aplikasi Anda', 
 			],
 		];

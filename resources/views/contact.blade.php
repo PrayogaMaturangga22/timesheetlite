@@ -38,10 +38,8 @@
                                 <div class="col-lg-2 col-md-4 col-sm-12">
                                     <div class="form-group">
                                         <select name="filterby" id="filterby" class="form-control">
-                                            <option value="first_name" for="filterby" selected>First Name</option>
-                                            <option value="last_name" for="filterby">Last Name</option>
+                                            <option value="name" for="filterby" selected>Full Name</option>
                                             <option value="email" for="filterby">E-Mail</option>
-                                            <option value="title" for="filterby">Title</option>
                                         </select>
                                     </div>
                                 </div>
@@ -67,7 +65,7 @@
                                         <th scope="col" style="width: 10%;">Contact Date</th>
                                         <th scope="col" style="width: 15%;">Full Name</th>
                                         <th scope="col" style="width: 15%;">Email</th>
-                                        <th scope="col" style="width: 20%;">Title</th>
+                                        <th scope="col" style="width: 20%;">Phone Number</th>
                                         <th scope="col" style="width: 20%;">Message</th>
                                         <th scope="col" style="width: 5%;">Show</th>
                                     </tr>
@@ -77,9 +75,9 @@
                                         <tr>
                                             <td scope="row" style="text-align: center;">{{ $i++ }}</td>
                                             <td>{{ date_format(date_create($contact->contact_date), "d-M-Y") }}</td>
-                                            <td>{{ $contact->first_name }} {{ $contact->last_name }}</td>
+                                            <td>{{ $contact->name }}</td>
                                             <td>{{ $contact->email }}</td>
-                                            <td>{{ $contact->title }}</td>
+                                            <td>{{ $contact->phone_number }}</td>
                                             @if (strlen($contact->message) > 25)
                                                 <td>{{ substr($contact->message, 0, 25) }} ...</td>
                                             @else
@@ -113,15 +111,15 @@
                             </tr>
                             <tr>
                                 <th style="width: 30%;">Full Name</th>
-                                <th style="width: 70%;"><span id="modalfull_name"></span></th>
+                                <th style="width: 70%;"><span id="modalname"></span></th>
                             </tr>
                             <tr>
                                 <th style="width: 30%;">Email</th>
                                 <th style="width: 70%;"><span id="modalemail"></span></th>
                             </tr>
                             <tr>
-                                <th style="width: 30%;">Title</th>
-                                <th style="width: 70%;"><span id="modaltitle"></span></th>
+                                <th style="width: 30%;">Phone Number</th>
+                                <th style="width: 70%;"><span id="modalphone_number"></span></th>
                             </tr>
                             <tr>
                                 <th style="width: 30%;">Message</th>
@@ -159,9 +157,9 @@
 				var vdata=JSON.parse(data);
 
                 $('#modalcontact_date').html(moment(vdata.contact_date).format('DD-MMM-YYYY'));
-                $('#modalfull_name').html(vdata.first_name + " " + vdata.last_name);
+                $('#modalname').html(vdata.name);
                 $('#modalemail').html(vdata.email);
-                $('#modaltitle').html(vdata.title);
+                $('#modalphone_number').html(vdata.phone_number);
                 $('#modalmessage').html(vdata.message);
                 $('#modalcreated_at').html(moment(vdata.created_at).format('DD-MMM-YYYY HH:mm:ss'));
                 $('#modalupdated_at').html(moment(vdata.updated_at).format('DD-MMM-YYYY HH:mm:ss'));
@@ -207,9 +205,9 @@
 							"<tr>" +
                                 "<td scope='row' style='text-align: center;'>" + i + "</td>" +
                                 "<td>" + moment(vdata.contact_date).format('DD-MMM-YYYY') + "</td>" +
-                                "<td>" + vdata.first_name + " " + vdata.last_name + "</td>" +
+                                "<td>" + vdata.name + "</td>" +
                                 "<td>" + vdata.email + "</td>" +
-                                "<td>" + vdata.title + "</td>" +
+                                "<td>" + vdata.phone_number + "</td>" +
                                 "<td>" + vmessage + "</td>" +
                                 "<td style='text-align: center;'><button type='button' class='btn btn-link btn-sm text-primary mr-2' onclick='OpenModalData(" + vdata.id + ")'><i class='nav-icon i-Files font-weight-bold'></i></button></td>" +
 							"</tr>");

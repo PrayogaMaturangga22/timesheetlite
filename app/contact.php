@@ -12,10 +12,9 @@ class contact extends Model
 
     protected $fillable = [
 		'contact_date', 
-		'first_name', 
-		'last_name', 
+		'name', 
 		'email', 
-		'title', 
+		'phone_number', 
 		'message', 
 		'created_at', 
 		'updated_at', 

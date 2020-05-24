@@ -68,7 +68,9 @@ class JSONController extends Controller
         $contact_list_filter = contact::
                         where('contact_date', '>=', $fromdate)->
                         where($filterby, 'LIKE', '%' . $filtervalue . '%')->
-                        where('contact_date', '<=', $todate)->get();
+                        where('contact_date', '<=', $todate)->
+                        orderBy('contact_date', 'desc')->
+                        get();
 
         return json_encode($contact_list_filter);
     }
@@ -87,7 +89,9 @@ class JSONController extends Controller
         $request_demo_list_filter = request_demo::
                         where('request_date', '>=', $fromdate)->
                         where($filterby, 'LIKE', '%' . $filtervalue . '%')->
-                        where('request_date', '<=', $todate)->get();
+                        where('request_date', '<=', $todate)->
+                        orderBy('request_date', 'desc')
+                        ->get();
 
         return json_encode($request_demo_list_filter);
     }
@@ -102,7 +106,8 @@ class JSONController extends Controller
 
         $subscriber_list_filter = subscriber::
                         where('subscription_date', '>=', $fromdate)->
-                        where('subscription_date', '<=', $todate)->get();
+                        where('subscription_date', '<=', $todate)->
+                        orderBy('subscription_date', 'desc')->get();
 
         return json_encode($subscriber_list_filter);
     }

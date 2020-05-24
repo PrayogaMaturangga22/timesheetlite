@@ -16,10 +16,9 @@ class CreateTableContact extends Migration
         Schema::create('contact', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->date('contact_date')->default('1900-01-01');
-            $table->string('first_name', 200)->default('')->nullable();
-            $table->string('last_name', 200)->default('')->nullable();
+            $table->string('name', 200)->default('')->nullable();
             $table->string('email', 200)->default('')->nullable();
-            $table->string('title', 1000)->default('')->nullable();
+            $table->string('phone_number', 1000)->default('')->nullable();
             $table->string('message', 8000)->default('')->nullable();
             $table->timestamps();
         });

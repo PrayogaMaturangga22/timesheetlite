@@ -63,7 +63,7 @@ class PagesController extends Controller
         $todate = Carbon::now();
         $todate = substr($todate, 0, 10);
 
-        $contact_list = contact::where('contact_date', '>=', $fromdate)->where('contact_date', '<=', $todate)->get();
+        $contact_list = contact::where('contact_date', '>=', $fromdate)->where('contact_date', '<=', $todate)->orderBy('contact_date', 'desc')->get();
 
         $fromdate = date_format(date_create($fromdate), "d-m-Y");
         $todate = date_format(date_create($todate), "d-m-Y");
@@ -84,7 +84,7 @@ class PagesController extends Controller
         $todate = Carbon::now();
         $todate = substr($todate, 0, 10);
 
-        $request_demo_list = request_demo::where('request_date', '>=', $fromdate)->where('request_date', '<=', $todate)->get();
+        $request_demo_list = request_demo::where('request_date', '>=', $fromdate)->where('request_date', '<=', $todate)->orderBy('request_date', 'desc')->get();
 
         $fromdate = date_format(date_create($fromdate), "d-m-Y");
         $todate = date_format(date_create($todate), "d-m-Y");
@@ -105,7 +105,7 @@ class PagesController extends Controller
         $todate = Carbon::now();
         $todate = substr($todate, 0, 10);
 
-        $subscriber_list = subscriber::where('subscription_date', '>=', $fromdate)->where('subscription_date', '<=', $todate)->get();
+        $subscriber_list = subscriber::where('subscription_date', '>=', $fromdate)->where('subscription_date', '<=', $todate)->orderBy('subscription_date', 'desc')->get();
 
         $fromdate = date_format(date_create($fromdate), "d-m-Y");
         $todate = date_format(date_create($todate), "d-m-Y");

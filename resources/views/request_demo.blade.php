@@ -123,10 +123,6 @@
                                 <th style="width: 70%;"><span id="modalemail"></span></th>
                             </tr>
                             <tr>
-                                <th style="width: 30%;">Message</th>
-                                <th style="width: 70%;"><span id="modalmessage"></span></th>
-                            </tr>
-                            <tr>
                                 <th style="width: 30%;">Created At</th>
                                 <th style="width: 70%;"><span id="modalcreated_at"></span></th>
                             </tr>
@@ -162,7 +158,6 @@
                 $('#modalphone_number').html(vdata.phone_number);
                 $('#modalemail').html(vdata.email);
                 $('#modalcompany_name').html(vdata.company_name);
-                $('#modalmessage').html(vdata.message);
                 $('#modalcreated_at').html(moment(vdata.created_at).format('DD-MMM-YYYY HH:mm:ss'));
                 $('#modalupdated_at').html(moment(vdata.updated_at).format('DD-MMM-YYYY HH:mm:ss'));
 			}

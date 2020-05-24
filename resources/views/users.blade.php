@@ -86,10 +86,17 @@
                                         <tr>
                                             <td scope="row" style="text-align: center;">{{ $i++ }}</td>
                                             <td>{{ $users->username }}</td>
-                                            <td>{{ $users->staff->full_name }}</td>
-                                            <td>{{ $users->staff->company->company_name }}</td>
-                                            <td>{{ date_format(date_create($users->staff->date_of_birth), "d-M-Y") }}</td>
-                                            <td>{{ $users->staff->phone_number }}</td>
+                                            @if(isset($users->staff->full_name))
+                                                <td>{{ $users->staff->full_name }}</td>
+                                                <td>{{ $users->staff->company->company_name }}</td>
+                                                <td>{{ date_format(date_create($users->staff->date_of_birth), "d-M-Y") }}</td>
+                                                <td>{{ $users->staff->phone_number }}</td>
+                                            @else
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                            @endif
                                             <td>{{ $users->email }}</td>
                                             @if ($users->app_status == "1")
                                                 <td><a class="badge badge-success m-2" href="#">Active</a></td>                            
