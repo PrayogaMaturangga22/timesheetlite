@@ -62,7 +62,8 @@ class PullDataController extends Controller
                     'registered_token' => $data->registered_token,
                     'app_status' => $data->app_status,
                     'trial_kuota' => $data->trial_kuota,
-                    'updated_at' => carbon::now(),
+                    'created_at' => $data->created_at,
+                    'updated_at' => $data->updated_at,
                 ];
     
                 $company = company::where('kode_perusahaan', '=', $data->kode_perusahaan)->first();
@@ -106,7 +107,8 @@ class PullDataController extends Controller
                     'imei' => $data->imei,
                     'device_name' => $data->device_name,
                     'user_status' => $data->user_status,
-                    'updated_at' => carbon::now(),
+                    'created_at' => $data->created_at,
+                    'updated_at' => $data->updated_at,
                 ];
     
                 $users = users::where('email', '=', $data->email)->first();
@@ -172,10 +174,11 @@ class PullDataController extends Controller
                     'wfh_status' => $data->wfh_status,
                     'total_task' => $data->total_task,
                     'total_task_done' => $data->total_task_done,
-                    'updated_at' => carbon::now(),
+                    'created_at' => $data->created_at,
+                    'updated_at' => $data->updated_at,
                 ];
     
-                $staff = staff::where('user_id', '=', $data->user_id)->first();
+                $staff = staff::where('user_id', '=', $user->id)->first();
     
                 if ($staff == null){
                     $staff = staff::create($data_array);

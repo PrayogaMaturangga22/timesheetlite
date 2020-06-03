@@ -477,8 +477,8 @@
                 legend: {
                     position: 'bottom'
                 },
-                responsive: false,
-                maintainAspectRatio: false,
+                responsive: true,
+                maintainAspectRatio: true,
             }
         }
         var myChart = new Chart(ctx, configdata);
@@ -522,6 +522,8 @@
                 legend: {
                     position: 'bottom'
                 },
+                responsive: true,
+                maintainAspectRatio: true,
             }
         }
 
