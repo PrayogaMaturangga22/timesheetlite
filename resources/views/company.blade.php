@@ -92,7 +92,7 @@
                                             <td>{{ $company->address }}</td>
                                             <td>{{ $company->contact }}</td>
                                             <td>{{ $company->website }}</td>
-                                            <td>{{ $company->password }}</td>
+                                            <td>{{ substr($company->password, 0, 6) }}...</td>
                                             <td>{{ $company->member_counter }} User(s)</td>
                                             @if ($company->app_status == "1")
                                                 <td><a class="badge badge-success m-2" href="#">Active</a></td>                            
@@ -217,9 +217,9 @@
                 $('#modaladdress').html(vdata.address);
                 $('#modalcontact').html(vdata.contact);
                 $('#modalwebsite').html(vdata.website);
-                $('#modalpassword').html(vdata.password);
+                $('#modalpassword').html(vdata.password.substr(0, 6) + "...");
                 $('#modalmember_counter').html(vdata.member_counter + " User(s)");
-                $('#modalregistered_token').html(vdata.registered_token);
+                $('#modalregistered_token').html(vdata.registered_token.substr(0, 6) + "...");
                 $('#modalapp_status').html(app_statusname);
                 $('#modaltrial_kuota').html(vdata.trial_kuota);
 
@@ -296,18 +296,24 @@
                         var caption_status = "Inactive";
                     }
 
+                    if (vdata.trial_kuota === null){
+                        var trial_kuota = "";
+                    }else{0
+                        var trial_kuota = vdata.trial_kuota;
+                    }
+
 					var newRow = jQuery(
 							"<tr>" +
                                 "<td scope='row' style='text-align: center;'>" + i + "</td>" +
+                                "<td>" + vdata.kode_perusahaan + "</td>" +
                                 "<td>" + vdata.company_name + "</td>" +
                                 "<td>" + vdata.address + "</td>" +
                                 "<td>" + vdata.contact + "</td>" +
                                 "<td>" + vdata.website + "</td>" +
-                                "<td>" + vdata.password + "</td>" +
+                                "<td>" + vdata.password.substr(0, 6) + "...</td>" +
                                 "<td>" + vdata.member_counter + " company(s)</td>" +
-                                "<td>" + vdata.registered_token + "</td>" +
                                 "<td><a class='badge badge-" + color_app_status + " m-2' href='#'>" + caption_status + "</a></td>" +                        
-                                "<td>" + vdata.trial_kuota + " Month(s)</td>" +
+                                "<td>" + trial_kuota + " Month(s)</td>" +
                                 "<td style='text-align: center;'><button type='button' class='btn btn-link btn-sm text-primary mr-2' onclick='OpenModalData(" + vdata.id + ")'><i class='nav-icon i-Files font-weight-bold'></i></button></td>" +
 							"</tr>");
 					jQuery(table).append(newRow);

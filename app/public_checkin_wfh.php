@@ -4,22 +4,24 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class registered_user extends Model
+class public_checkin_wfh extends Model
 {
-    protected $table = 'registered_user';
+    protected $table = 'public_checkin_wfh';
 
     protected $primaryKey = 'id';
 
     protected $fillable = [
-      'date', 
-      'total',
-      'status',
-      'created_at', 
-      'updated_at', 
+		'user_id', 
+		'date', 
     ];
     
     protected $hidden = [
 		'created_at', 
 		'updated_at', 
     ];
+
+    public function users()
+    {
+    	return $this->hasOne('App\users', 'user_id', 'id');
+	}
 }

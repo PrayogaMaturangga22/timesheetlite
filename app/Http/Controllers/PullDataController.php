@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 
 use App\company;
 use App\users;
+use App\public_users_temp;
 use App\staff;
 use App\payment;
 use App\payment_request;
@@ -16,6 +17,9 @@ use App\pulldata;
 use App\summarized_table;
 use App\registered_user;
 use App\registered_user_detail;
+
+use App\public_checkin_wfh;
+use App\public_health_monitoring;
 
 use Carbon\carbon;
 
@@ -45,6 +49,14 @@ class PullDataController extends Controller
         }else{
             $res = $client->request('GET', $URL . '/services/db-timesheet-lite/tb_' . $tablename, ['query' => ['key' => $key]]);
         }
+
+        // --- DELETE ALL TEMPORARY USERS DATA ---
+
+        if ($tablename == "users_temp"){
+            $public_users_temp = DB::update("DELETE FROM public_users_temp");
+        }
+
+        // ----------------------------------------
 
         $data_list = json_decode($res->getBody()->getContents());
 
@@ -97,6 +109,25 @@ class PullDataController extends Controller
                 // ---------------------------------------------------------------------
 
             }
+        }else if($tablename == "users_temp"){
+            foreach($data_list as $data){
+                $data_array = [
+                    'username' => $data->username,
+                    'email' => $data->email,
+                    'password' => $data->password,
+                    'token' => $data->token,
+                    'expired_at' => $data->expired_at,
+                    'sent_at' => $data->sent_at,
+                    'created_at' => $data->created_at,
+                    'updated_at' => $data->updated_at,
+                ];
+    
+                // $public_users_temp = public_users_temp::where('email', '=', $data->email)->where('token', '=', $data->token)->first();
+    
+                // if ($public_users_temp == null){
+                    $public_users_temp = public_users_temp::create($data_array);
+                // }
+            }
         }else if($tablename == "users"){
             foreach($data_list as $data){
                 $data_array = [
@@ -120,6 +151,65 @@ class PullDataController extends Controller
     
                     $users->update($data_array);
                 }
+            }
+        }else if($tablename == "checkin_wfh"){
+
+            foreach($data_list as $data){
+
+                // GET ID FROM EMAIL // USER
+
+                $user = users::where('email', '=', $data->user_id)->first();
+
+                $user_id = $user->id;
+
+                // ---------------
+
+                $data_array = [
+                    'user_id' => $user_id,
+                    'date' => $data->date,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ];
+    
+                $public_checkin_wfh = public_checkin_wfh::where('user_id', '=', $user->id)->where('date', '=', $data->date)->first();
+    
+                if ($public_checkin_wfh == null){
+                    $public_checkin_wfh = public_checkin_wfh::create($data_array);
+                }else{
+                    $public_checkin_wfh = public_checkin_wfh::findOrFail($public_checkin_wfh->id);
+    
+                    $public_checkin_wfh->update($data_array);
+                }               
+            }
+        }else if($tablename == "health_monitoring"){
+
+            foreach($data_list as $data){
+
+                // GET ID FROM EMAIL // USER
+
+                $user = users::where('email', '=', $data->user_id)->first();
+
+                $user_id = $user->id;
+
+                // ---------------
+
+                $data_array = [
+                    'user_id' => $user_id,
+                    'status' => $data->status,
+                    'date' => $data->date,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ];
+    
+                $public_health_monitoring = public_health_monitoring::where('user_id', '=', $user->id)->where('date', '=', $data->date)->first();
+    
+                if ($public_health_monitoring == null){
+                    $public_health_monitoring = public_health_monitoring::create($data_array);
+                }else{
+                    $public_health_monitoring = public_health_monitoring::findOrFail($public_health_monitoring->id);
+    
+                    $public_health_monitoring->update($data_array);
+                }               
             }
         }else if($tablename == "staff"){
 
@@ -186,10 +276,9 @@ class PullDataController extends Controller
                     $staff = staff::findOrFail($staff->id);
     
                     $staff->update($data_array);
-                }
+                }               
             }
         }
-        // ---------------------------------------------
 
         // ---- calculate data to show to dashboard ----
 
@@ -248,7 +337,7 @@ class PullDataController extends Controller
 
         $V1 = summarized_table::where('column_name', '=', 'V1')->first();
 
-        $total_user = users::count('id');
+        $total_user = public_users_temp::count('id');
 
         $V1->total = $total_user;
 
@@ -256,7 +345,7 @@ class PullDataController extends Controller
 
         $V2 = summarized_table::where('column_name', '=', 'V2')->first();
 
-        $total_user = company::count('id');
+        $total_user = users::count('id');
 
         $V2->total = $total_user;
 
@@ -264,7 +353,7 @@ class PullDataController extends Controller
 
         $V3 = summarized_table::where('column_name', '=', 'V3')->first();
 
-        $total_user = payment_request::count('id');
+        $total_user = company::count('id');
 
         $V3->total = $total_user;
 
@@ -360,19 +449,27 @@ class PullDataController extends Controller
     public function CalculateUserCheckIn(){
         // ---- to summarized_table / users check in ------
 
-        $UC1 = summarized_table::where('column_name', '=', 'UC1')->first();
+        $updatezero = DB::update("UPDATE summarized_table SET total = 0 WHERE LEFT(column_name, 2) = 'UC'");
 
-        $total_checkin = staff::where('wfh_status', '=', '1')->count('id');
+        $today_date = Carbon::now();
 
-        $UC1->total = $total_checkin;
+        $today_date = substr($today_date, 0, 10);
+
+        $public_health_monitoring = DB::select(DB::raw("
+            SELECT IFNULL(SUM(CASE WHEN b.user_id IS NOT NULL THEN 1 ELSE 0 END), 0) totalcheckin, IFNULL(SUM(CASE WHEN b.user_id IS NULL THEN 1 ELSE 0 END), 0) totalnotcheckin
+            FROM public_users a
+            LEFT JOIN public_checkin_wfh b ON a.id = b.user_id AND b.date = '$today_date'
+        "));
+
+        $UC1 = summarized_table::where('column_name', '=', 'UC1')->first();        
+
+        $UC1->total = $public_health_monitoring[0]->totalcheckin;
 
         $UC1->update();
+        
+        $UC2 = summarized_table::where('column_name', '=', 'UC2')->first();        
 
-        $UC2 = summarized_table::where('column_name', '=', 'UC2')->first();
-
-        $total_not_checkin = staff::where('wfh_status', '=', '0')->count('id');
-
-        $UC2->total = $total_not_checkin;
+        $UC2->total = $public_health_monitoring[0]->totalnotcheckin;
 
         $UC2->update();
 
@@ -404,29 +501,54 @@ class PullDataController extends Controller
     public function CalculateUserHealthCondition(){
         // ---- to summarized_table / users health condition ------
 
-        $UH1 = summarized_table::where('column_name', '=', 'UH1')->first();
+        $updatezero = DB::update("UPDATE summarized_table SET total = 0 WHERE LEFT(column_name, 2) = 'UH'");
 
-        $total_normal = staff::where('health_condition', '=', 'Normal')->count('id');
+        $public_health_monitoring_list = DB::select(DB::raw("
+            SELECT a.status, IFNULL(COUNT(a.user_id), 0) total
+            FROM public_health_monitoring a
+            INNER JOIN (
+                SELECT MAX(ID) maxid, user_id
+                FROM public_health_monitoring
+                GROUP BY user_id
+            ) b ON a.user_id = b.user_id AND a.id = b.maxid
+            GROUP BY a.status
+        "));
 
-        $UH1->total = $total_normal;
+        foreach($public_health_monitoring_list as $public_health_monitoring){
+            if ($public_health_monitoring->status == "Normal"){
 
-        $UH1->update();
+                $UH1 = summarized_table::where('column_name', '=', 'UH1')->first();        
 
-        $UH2 = summarized_table::where('column_name', '=', 'UH2')->first();
+                $UH1->total = $public_health_monitoring->total;
+        
+                $UH1->update();
+        
+            }elseif ($public_health_monitoring->status == "PDP"){
 
-        $total_pdp = staff::where('health_condition', '=', 'PDP')->count('id');
+                $UH2 = summarized_table::where('column_name', '=', 'UH2')->first();        
 
-        $UH2->total = $total_pdp;
+                $UH2->total = $public_health_monitoring->total;
+        
+                $UH2->update();
+        
+            }elseif ($public_health_monitoring->status == "ODP"){
 
-        $UH2->update();
+                $UH3 = summarized_table::where('column_name', '=', 'UH3')->first();        
 
-        $UH3 = summarized_table::where('column_name', '=', 'UH3')->first();
+                $UH3->total = $public_health_monitoring->total;
+        
+                $UH3->update();
+        
+            }elseif ($public_health_monitoring->status == "Positive"){
+        
+                $UH4 = summarized_table::where('column_name', '=', 'UH4')->first();        
 
-        $total_positif = staff::where('health_condition', '=', 'Positif')->count('id');
-
-        $UH3->total = $total_positif;
-
-        $UH3->update();
+                $UH4->total = $public_health_monitoring->total;
+        
+                $UH4->update();
+        
+            }
+        }
 
         // --- end of summarized_table / users health condition ---
     }
@@ -521,11 +643,36 @@ class PullDataController extends Controller
         "));
 
         foreach($register_user_list as $register_user){
-            $registered_user = registered_user::where('date', '=', $register_user->register_date)->first();
+            $registered_user = registered_user::where('date', '=', $register_user->register_date)->where('status', '=', 'Verified')->first();
 
             $data_array = [
                 "date" => $register_user->register_date,
-                "total" => $register_user->register_user
+                "total" => $register_user->register_user,
+                "status"=>'Verified',
+            ];
+
+            if ($registered_user == null){
+                $registered_user = registered_user::create($data_array);
+            }else{
+                $registered_user = registered_user::findOrFail($registered_user->id);
+                
+                $registered_user->update($data_array);
+            }
+        }
+
+        $register_user_list = DB::select(DB::raw("
+            SELECT STR_TO_DATE(updated_at, '%Y-%m-%d') as register_date, COUNT(a.id) as register_user
+            FROM public_users_temp a
+            GROUP BY STR_TO_DATE(updated_at, '%Y-%m-%d')        
+        "));
+
+        foreach($register_user_list as $register_user){
+            $registered_user = registered_user::where('date', '=', $register_user->register_date)->where('status', '=', 'Not Verified')->first();
+
+            $data_array = [
+                "date" => $register_user->register_date,
+                "total" => $register_user->register_user,
+                "status"=>'Not Verified',
             ];
 
             if ($registered_user == null){
@@ -541,6 +688,7 @@ class PullDataController extends Controller
     }
 
     public function CalculateRegisterUsersDetail(){
+        
         // ---- to summarized_table / registered users ------
 
         $register_user_detail_list = DB::select(DB::raw("

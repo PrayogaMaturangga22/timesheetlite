@@ -89,7 +89,7 @@
                         var vdata=JSON.parse(data);
                         $('#table' + datatable).html(moment(vdata.last_pull_date).format('DD-MMM-YYYY hh:mm:ss'));
 
-                        datatable = 'users';
+                        datatable = 'users_temp';
 
                         $.ajax({
                             type: 'POST',
@@ -99,7 +99,7 @@
                                 var vdata=JSON.parse(data);
                                 $('#table' + datatable).html(moment(vdata.last_pull_date).format('DD-MMM-YYYY hh:mm:ss'));
 
-                                datatable = 'staff';
+                                datatable = 'users';
 
                                 $.ajax({
                                     type: 'POST',
@@ -108,8 +108,72 @@
                                     success: function (data) {
                                         var vdata=JSON.parse(data);
                                         $('#table' + datatable).html(moment(vdata.last_pull_date).format('DD-MMM-YYYY hh:mm:ss'));
-                                        loadingcontainer.style.display = "none";
-                                        swal('Success!', 'Pull all data sucessfully!', 'success');
+
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: 'getData',
+                                            data: {datatable: datatable, _token: '{{csrf_token()}}' },
+                                            success: function (data) {
+                                                var vdata=JSON.parse(data);
+                                                $('#table' + datatable).html(moment(vdata.last_pull_date).format('DD-MMM-YYYY hh:mm:ss'));
+
+                                                datatable = 'staff';
+
+                                                $.ajax({
+                                                    type: 'POST',
+                                                    url: 'getData',
+                                                    data: {datatable: datatable, _token: '{{csrf_token()}}' },
+                                                    success: function (data) {
+                                                        var vdata=JSON.parse(data);
+                                                        $('#table' + datatable).html(moment(vdata.last_pull_date).format('DD-MMM-YYYY hh:mm:ss'));
+                                                        $.ajax({
+                                                            type: 'POST',
+                                                            url: 'getData',
+                                                            data: {datatable: datatable, _token: '{{csrf_token()}}' },
+                                                            success: function (data) {
+                                                                var vdata=JSON.parse(data);
+                                                                $('#table' + datatable).html(moment(vdata.last_pull_date).format('DD-MMM-YYYY hh:mm:ss'));
+
+                                                                datatable = 'checkin_wfh';
+
+                                                                $.ajax({
+                                                                    type: 'POST',
+                                                                    url: 'getData',
+                                                                    data: {datatable: datatable, _token: '{{csrf_token()}}' },
+                                                                    success: function (data) {
+                                                                        var vdata=JSON.parse(data);
+                                                                        $('#table' + datatable).html(moment(vdata.last_pull_date).format('DD-MMM-YYYY hh:mm:ss'));
+                                                                        $.ajax({
+                                                                            type: 'POST',
+                                                                            url: 'getData',
+                                                                            data: {datatable: datatable, _token: '{{csrf_token()}}' },
+                                                                            success: function (data) {
+                                                                                var vdata=JSON.parse(data);
+                                                                                $('#table' + datatable).html(moment(vdata.last_pull_date).format('DD-MMM-YYYY hh:mm:ss'));
+
+                                                                                datatable = 'health_monitoring';
+
+                                                                                $.ajax({
+                                                                                    type: 'POST',
+                                                                                    url: 'getData',
+                                                                                    data: {datatable: datatable, _token: '{{csrf_token()}}' },
+                                                                                    success: function (data) {
+                                                                                        var vdata=JSON.parse(data);
+                                                                                        $('#table' + datatable).html(moment(vdata.last_pull_date).format('DD-MMM-YYYY hh:mm:ss'));
+                                                                                        loadingcontainer.style.display = "none";
+                                                                                        swal('Success!', 'Pull all data sucessfully!', 'success');
+                                                                                    }
+                                                                                })
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                        })
                                     }
                                 })
                             }

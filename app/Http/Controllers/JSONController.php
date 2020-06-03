@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\users;
 use App\staff;
 use App\company;
+use App\public_users_temp;
+
 use App\payment_request;
 use App\payment;
 use App\registered_user;
@@ -34,22 +36,48 @@ class JSONController extends Controller
 
         $filterby = $request->filterby;
         $filtervalue = $request->filtervalue;
-        $app_status = $request->app_status;
+        $verification_statusname = $request->verification_statusname;
         
-        if ($app_status != "ALL") {
-            $users_list_filter = users::select('public_users.*', 'public_company.app_status', 'public_staff.phone_number', 'public_staff.full_name', 'public_company.company_name')
-                ->leftJoin('public_staff', 'public_users.id', '=', 'public_staff.user_id')
-                ->leftJoin('public_company', 'public_staff.company_id', '=', 'public_company.id')
-                ->where($filterby, 'LIKE', '%' . $filtervalue . '%')
-                ->where('app_status', '=', $app_status)
-                ->get();
+        if ($verification_statusname != "ALL") {
+            $sql =
+            "
+                SELECT a.username, b.full_name, c.company_name, b.date_of_birth, b.phone_number, a.email, 'Verified' status, a.id
+                FROM public_users a
+                LEFT JOIN public_staff b ON b.user_id = a.id
+                LEFT JOIN public_company c ON b.company_id = c.id
+                WHERE a.$filterby LIKE '%$filtervalue%'
+                AND $verification_statusname = 1
+
+                UNION ALL
+
+                SELECT a.username, '-' as full_name, '-' as company_name, '-' as date_of_birth, '-' as phone_number, a.email, 'Not Verified' status, a.id
+                FROM public_users_temp a
+                LEFT JOIN public_staff b ON b.user_id = a.id
+                LEFT JOIN public_company c ON b.company_id = c.id
+                WHERE a.$filterby LIKE '%$filtervalue%'
+                AND $verification_statusname = 0
+            ";
         }else{
-            $users_list_filter = users::select('public_users.*', 'public_company.app_status', 'public_staff.phone_number', 'public_staff.full_name', 'public_company.company_name')
-                ->leftJoin('public_staff', 'public_users.id', '=', 'public_staff.user_id')
-                ->leftJoin('public_company', 'public_staff.company_id', '=', 'public_company.id')
-                ->where($filterby, 'LIKE', '%' . $filtervalue . '%')
-                ->get();
+            $sql =
+                "
+                    SELECT a.username, b.full_name, c.company_name, b.date_of_birth, b.phone_number, a.email, 'Verified' status, a.id
+                    FROM public_users a
+                    LEFT JOIN public_staff b ON b.user_id = a.id
+                    LEFT JOIN public_company c ON b.company_id = c.id
+                    WHERE a.$filterby LIKE '%$filtervalue%'
+
+                    UNION ALL
+
+                    SELECT a.username, '-' as full_name, '-' as company_name, '-' as date_of_birth, '-' as phone_number, a.email, 'Not Verified' status, a.id
+                    FROM public_users_temp a
+                    LEFT JOIN public_staff b ON b.user_id = a.id
+                    LEFT JOIN public_company c ON b.company_id = c.id
+                    WHERE a.$filterby LIKE '%$filtervalue%'
+                ";
+
         }
+
+        $users_list_filter = DB::select(DB::raw($sql));
 
         return json_encode($users_list_filter);
     }
@@ -264,11 +292,12 @@ class JSONController extends Controller
         $period = new DatePeriod(new DateTime($fromdate), $interval, new DateTime($todate));
 
         foreach ($period as $date) {
-            $registered_user = registered_user::where('date', '=', $date)->first();
+            $registered_user = registered_user::where('date', '=', $date)->where('status', '=', 'Not Verified')->first();
 
             $data_array = [
                 "date" => $date,
-                "total" => 0
+                "total" => 0,
+                "status"=>"Not Verified",
             ];
 
             if ($registered_user == null){
@@ -279,7 +308,42 @@ class JSONController extends Controller
         
         // -----------------------------------------
 
-        $registered_user_list = registered_user::where('date', '>=', $fromdate)->where('date', '<=', $todate)->orderBy('date', 'asc')->get();
+        $registered_user_list = registered_user::where('date', '>=', $fromdate)->where('date', '<=', $todate)->where('status', '=', 'Not Verified')->orderBy('date', 'asc')->get();
+
+        return json_encode($registered_user_list);
+    }
+
+    public function getverifieduserdata(Request $request){
+
+        $fromdate = $request->fromdate;
+        $todate = $request->todate;
+        
+		$fromdate = Carbon::createFromFormat('d-m-Y', $fromdate)->format('Y-m-d');
+        $todate = Carbon::createFromFormat('d-m-Y', $todate)->format('Y-m-d');
+
+        // --insert dummy data for chart no date --
+        
+        $interval = DateInterval::createFromDateString('1 day');
+        $period = new DatePeriod(new DateTime($fromdate), $interval, new DateTime($todate));
+
+        foreach ($period as $date) {
+            $registered_user = registered_user::where('date', '=', $date)->where('status', '=', 'Verified')->first();
+
+            $data_array = [
+                "date" => $date,
+                "total" => 0,
+                "status"=>"Verified",
+            ];
+
+            if ($registered_user == null){
+                $registered_user = registered_user::create($data_array);
+            }
+
+        }
+        
+        // -----------------------------------------
+
+        $registered_user_list = registered_user::where('date', '>=', $fromdate)->where('date', '<=', $todate)->where('status', '=', 'Verified')->orderBy('date', 'asc')->get();
 
         return json_encode($registered_user_list);
     }
@@ -307,7 +371,7 @@ class JSONController extends Controller
     public function getuserdetail(Request $request){
         $dataid = $request->dataid;
 
-        $users_list_filter = users::select('public_users.*', 'public_company.*', 'public_staff.*', 'superior.full_name as superior_name')
+        $users_list_filter = users::select('public_users.*', 'public_company.*', 'public_staff.*', 'superior.full_name as superior_name', 'public_users.id as public_usersid')
             ->leftJoin('public_staff', 'public_users.id', '=', 'public_staff.user_id')
             ->leftJoin('public_company', 'public_staff.company_id', '=', 'public_company.id')
             ->leftJoin('public_staff as superior', 'public_staff.superior_id', '=', 'superior.id')
@@ -316,6 +380,15 @@ class JSONController extends Controller
 
         return json_encode($users_list_filter[0]);
     }
+
+    public function getuser_tempdetail(Request $request){
+        $dataid = $request->dataid;
+
+        $users_list_filter = public_users_temp::findOrFail($dataid);
+
+        return json_encode($users_list_filter);
+    }
+    
 
     public function getcontactdetail(Request $request){
         $dataid = $request->dataid;

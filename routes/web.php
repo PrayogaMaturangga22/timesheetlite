@@ -37,10 +37,14 @@ Route::post('getcompanyfilter', 'JSONController@getcompanyfilter');
 Route::post('getprice_historyfilter', 'JSONController@getprice_historyfilter');
 Route::post('updatePrice', 'PagesController@updatePrice');
 Route::post('getregisteruserdata', 'JSONController@getregisteruserdata');
+Route::post('getverifieddata', 'JSONController@getverifieduserdata');
 Route::post('getsubscriptiondata', 'JSONController@getsubscriptiondata');
 Route::post('getcompanydata', 'JSONController@getcompanydata');
 Route::post('getuserscompany', 'JSONController@getuserscompany');
+
 Route::post('getuserdetail', 'JSONController@getuserdetail');
+Route::post('getuser_tempdetail', 'JSONController@getuser_tempdetail');
+
 Route::post('getcompanydetail', 'JSONController@getcompanydetail');
 Route::post('getpayment_request', 'JSONController@getpayment_request');
 Route::post('getpayment', 'JSONController@getpayment');

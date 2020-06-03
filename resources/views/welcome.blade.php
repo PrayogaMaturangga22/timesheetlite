@@ -16,9 +16,16 @@
     </div>
     <div class="row">
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="p-4 rounded d-flex align-items-center bg-primary text-white"><i class="i-Cool-Guy text-32 mr-3"></i>
+            <div class="p-4 rounded d-flex align-items-center bg-primary text-white"><i class="i-Add-UserStar text-32 mr-3"></i>
                 <div>
-                    <h4 class="text-18 mb-1 text-white">Total Users</h4><span>Total: {{ $totalusers }}</span>
+                    <h4 class="text-18 mb-1 text-white">Total Registered</h4><span>Total: {{ $totalregistered }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="p-4 rounded d-flex align-items-center bg-info text-white"><i class="i-Administrator text-32 mr-3"></i>
+                <div>
+                    <h4 class="text-18 mb-1 text-white">Total Verified</h4><span>Total: {{ $totalverified }}</span>
                 </div>
             </div>
         </div>
@@ -32,14 +39,7 @@
         <div class="col-lg-3 col-md-6 mb-4">
             <div class="p-4 rounded d-flex align-items-center bg-danger text-white"><i class="i-Big-Data text-32 mr-3"></i>
                 <div>
-                    <h4 class="text-18 mb-1 text-white">Total Payment Req Issued</h4><span>Total: {{ $totalpayment_request }}</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="p-4 rounded d-flex align-items-center bg-warning text-white"><i class="i-Big-Data text-32 mr-3"></i>
-                <div>
-                    <h4 class="text-18 mb-1 text-white">Total Receipt Received</h4><span>Total: {{ $totalreceipt }}</span>
+                    <h4 class="text-18 mb-1 text-white">Total Receipt Issued</h4><span>Total: {{ $totalreceipt }}</span>
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
         <div class="col-md-12">
             <div class="card mb-3">
                 <div class="card-body">
-                    <h4 class="card-title mb-3">Registered User</h4>
+                    <h4 class="card-title mb-3">Registered and Verified Users</h4>
                     <form onsubmit="LoadRegisterChart()">
                         <div class="row">
                             <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12" style="padding-top: 5px;">
@@ -143,7 +143,7 @@
                             <canvas id="BarChart2" height="150px"></canvas>
                         </div>                
                         <div class="col-md-3" style="padding-top: 20px; padding-bottom: 20px;">
-                            <h6 class="card-title mb-3">User Check In</h6>
+                            <h6 class="card-title mb-3">User Check In Today</h6>
                             <canvas id="BarChart3" height="150px"></canvas>
                         </div>                
                         <div class="col-md-3" style="padding-top: 20px; padding-bottom: 20px;">
@@ -371,7 +371,8 @@
         var todate = document.getElementById("todateregister").value;
 
         var labels = [];
-        var datas = [];
+        var datasregistered = [];
+        var datasverified = [];
 
         if (fromdate === ""){
             swal({
@@ -407,9 +408,20 @@
                     labels.push("" + moment(vdata.date).format('DD-MMM-YY') + "");
                 })
                 vdata_list.forEach(function(vdata){
-                    datas.push(vdata.total);
+                    datasregistered.push(vdata.total);
                 })
-                addData(LineChart, labels, datas);
+                $.ajax({
+                    type: 'POST',
+                    url: 'getverifieddata',
+                    data: {fromdate: fromdate, todate: todate, _token: '{{csrf_token()}}' },
+                    success: function (data) {
+                        var vdata_list=JSON.parse(data);
+                        vdata_list.forEach(function(vdata){
+                            datasverified.push(vdata.total);
+                        })
+                        addData(LineChart, labels, datasregistered, datasverified);
+                    }
+                });
             }
         });
 
@@ -459,17 +471,27 @@
 
     }
 
-    function addData(chartID, vlabel, vdata) {
+    function addData(chartID, vlabel, vdataregister, vdataverified) {
+
+        console.log(vdataregister);
+        console.log(vdataverified);
+
         var ctx = document.getElementById('LineChart').getContext('2d');
         var configdata = {
             type: 'line',
             data: {
                 labels: vlabel,
                 datasets: [{
-                    label: "Registered User Data",
+                    label: "Register Only",
+                    backgroundColor: '#FFE0E6',
+                    borderColor: '#FBB5C4',
+                    data: vdataregister
+                },
+                {
+                    label: "Verified Users",
                     backgroundColor: '#EBE0FF',
                     borderColor: '#AA7FFF',
-                    data: vdata
+                    data: vdataverified
                 }]
             },
 
@@ -732,12 +754,22 @@
                 @endforeach
             ],
             datasets: [{
-                label: "Registered User Data",
-                backgroundColor: '#EBE0FF',
-                borderColor: '#AA7FFF',
+                label: "Register Only",
+                backgroundColor: '#FFE0E6',
+                borderColor: '#FBB5C4',
                 data: [
                     @foreach ($registered_user_list as $registered_user)
                         {{ $registered_user->total }},
+                    @endforeach
+                ]
+            },
+            {
+                label: "Verified Users",
+                backgroundColor: '#EBE0FF',
+                borderColor: '#AA7FFF',
+                data: [
+                    @foreach ($verified_user_list as $verified_user)
+                        {{ $verified_user->total }},
                     @endforeach
                 ]
             }]

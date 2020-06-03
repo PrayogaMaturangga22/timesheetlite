@@ -169,9 +169,17 @@ class summarized_tableSeeder extends Seeder
 			],
 	    	[
 				'column_name'=>'UH3', 
+				'total'=>'2', 
+				'color_code'=>'#F44336',				
+				'column_desc'=>'ODP',
+				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+			],
+	    	[
+				'column_name'=>'UH4', 
 				'total'=>'1', 
 				'color_code'=>'#FFC107',
-				'column_desc'=>'Positif',
+				'column_desc'=>'Positive',
 				'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
 				'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 			],

@@ -31,5 +31,5 @@ class users extends Model
     public function staff()
     {
     	return $this->hasOne('App\staff', 'user_id', 'id');
-    }
+	}
 }

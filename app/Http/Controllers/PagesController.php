@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\users;
 use App\company;
+use App\public_users_temp;
 
 use App\pricing;
 use App\price_history;
@@ -46,10 +47,24 @@ class PagesController extends Controller
             return redirect('/');
         }
 
-        $users_list = users::select('public_users.*', 'public_company.app_status')
-            ->leftJoin('public_staff', 'public_staff.user_id', '=', 'public_users.id')
-            ->leftJoin('public_company', 'public_staff.company_id', '=', 'public_company.id')
-            ->get();
+        // diambil daari temp, untuk melihat juga users yang belum melakukan verifikasi
+
+        $users_list = 
+            DB::select(DB::raw(
+                "
+                    SELECT a.username, b.full_name, c.company_name, b.date_of_birth, b.phone_number, a.email, 'Verified' status, a.id
+                    FROM public_users a
+                    LEFT JOIN public_staff b ON b.user_id = a.id
+                    LEFT JOIN public_company c ON b.company_id = c.id
+
+                    UNION ALL
+
+                    SELECT a.username, '-' as full_name, '-' as company_name, '-' as date_of_birth, '-' as phone_number, a.email, 'Not Verified' status, a.id
+                    FROM public_users_temp a
+                    LEFT JOIN public_staff b ON b.user_id = a.id
+                    LEFT JOIN public_company c ON b.company_id = c.id
+                "
+            ));
 
         return view('users', compact('users_list'));
     }
@@ -212,11 +227,12 @@ class PagesController extends Controller
         $period = new DatePeriod(new DateTime($fromdate), $interval, new DateTime($todate));
 
         foreach ($period as $date) {
-            $registered_user = registered_user::where('date', '=', $date)->first();
+            $registered_user = registered_user::where('date', '=', $date)->where('status', '=', 'Not Verified')->first();
 
             $data_array = [
                 "date" => $date,
-                "total" => 0
+                "total" => 0,
+                "status"=>"Not Verified",
             ];
 
             if ($registered_user == null){
@@ -227,7 +243,31 @@ class PagesController extends Controller
         
         // -----------------------------------------
 
-        $registered_user_list = registered_user::where('date', '>=', $fromdate)->where('date', '<=', $todate)->orderBy('date', 'asc')->get();
+        $registered_user_list = registered_user::where('date', '>=', $fromdate)->where('date', '<=', $todate)->where('status', '=', 'Not Verified')->orderBy('date', 'asc')->get();
+
+        // --insert dummy data for chart no date --
+        
+        $interval = DateInterval::createFromDateString('1 day');
+        $period = new DatePeriod(new DateTime($fromdate), $interval, new DateTime($todate));
+
+        foreach ($period as $date) {
+            $registered_user = registered_user::where('date', '=', $date)->where('status', '=', 'Verified')->first();
+
+            $data_array = [
+                "date" => $date,
+                "total" => 0,
+                "status"=>"Verified",
+            ];
+
+            if ($registered_user == null){
+                $registered_user = registered_user::create($data_array);
+            }
+
+        }
+        
+        // -----------------------------------------
+
+        $verified_user_list = registered_user::where('date', '>=', $fromdate)->where('date', '<=', $todate)->where('status', '=', 'Verified')->orderBy('date', 'asc')->get();
 
         $registered_user_detail_list = DB::select(DB::raw("
             SELECT 'January' as 'MonthName', a.name as 'status', IFNULL(SUM(b.total), 0) total
@@ -316,12 +356,12 @@ class PagesController extends Controller
         $fromdate = date_format(date_create($fromdate), "d-m-Y");
         $todate = date_format(date_create($todate), "d-m-Y");
 
-        $totalusers = summarized_table::where('column_name', '=', 'V1')->first();
-        $totalusers = $totalusers->total;
-        $totalcompany = summarized_table::where('column_name', '=', 'V2')->get()->first();
+        $totalregistered = summarized_table::where('column_name', '=', 'V1')->first();
+        $totalregistered = $totalregistered->total;
+        $totalverified = summarized_table::where('column_name', '=', 'V2')->first();
+        $totalverified = $totalverified->total;
+        $totalcompany = summarized_table::where('column_name', '=', 'V3')->get()->first();
         $totalcompany = $totalcompany->total;
-        $totalpayment_request = summarized_table::where('column_name', '=', 'V3')->get()->first();
-        $totalpayment_request = $totalpayment_request->total;
         $totalreceipt = summarized_table::where('column_name', '=', 'V4')->get()->first();
         $totalreceipt = $totalreceipt->total;
 
@@ -348,8 +388,8 @@ class PagesController extends Controller
 
         return view('welcome', compact(
             'totalcompany', 
-            'totalusers', 
-            'totalpayment_request', 
+            'totalregistered', 
+            'totalverified',
             'totalreceipt',
 
             'trial_color',
@@ -369,6 +409,7 @@ class PagesController extends Controller
             'expired_status_week_list',
 
             'registered_user_list',
+            'verified_user_list',
 
             'registered_user_detail_list',
 

@@ -12,6 +12,7 @@ class CreateTableRegisteredUser extends Migration
             $table->bigIncrements('id');
             $table->date('date');
             $table->integer('total')->default(0);
+            $table->string('status', 200)->default('');
             $table->timestamps();
         });
     }

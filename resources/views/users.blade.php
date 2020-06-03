@@ -26,10 +26,8 @@
                                 <div class="col-lg-2 col-md-4 col-sm-12">
                                     <div class="form-group">
                                         <select name="filterby" id="filterby" class="form-control">
-                                            <option value="full_name" for="filterby" selected>Full Name</option>
                                             <option value="username" for="filterby">User Name</option>
                                             <option value="email" for="filterby">E-Mail</option>
-                                            <option value="company_name" for="filterby">Company Name</option>
                                         </select>
                                     </div>
                                 </div>
@@ -47,17 +45,17 @@
                                     <div class="row">
                                         <div class="col-md-4 col-xs-12">
                                             <label class="radio radio-primary">
-                                                <input type="radio" name="app_status" value="ALL" checked><span>ALL</span><span class="checkmark"></span>
+                                                <input type="radio" name="verification_status" value="ALL" checked><span>ALL</span><span class="checkmark"></span>
                                             </label>
                                         </div>
                                         <div class="col-md-4 col-xs-12">
                                             <label class="radio radio-primary">
-                                                <input type="radio" name="app_status" value="1"><span>Active</span><span class="checkmark"></span>
+                                                <input type="radio" name="verification_status" value="1"><span>Verified</span><span class="checkmark"></span>
                                             </label>
                                         </div>
                                         <div class="col-md-4 col-xs-12">
                                             <label class="radio radio-primary">
-                                                <input type="radio" name="app_status" value="0"><span>Inactive</span><span class="checkmark"></span>
+                                                <input type="radio" name="verification_status" value="0"><span>Not Verified</span><span class="checkmark"></span>
                                             </label>
                                         </div>
                                     </div>
@@ -86,24 +84,21 @@
                                         <tr>
                                             <td scope="row" style="text-align: center;">{{ $i++ }}</td>
                                             <td>{{ $users->username }}</td>
-                                            @if(isset($users->staff->full_name))
-                                                <td>{{ $users->staff->full_name }}</td>
-                                                <td>{{ $users->staff->company->company_name }}</td>
-                                                <td>{{ date_format(date_create($users->staff->date_of_birth), "d-M-Y") }}</td>
-                                                <td>{{ $users->staff->phone_number }}</td>
+                                            <td>{{ $users->full_name }}</td>
+                                            <td>{{ $users->company_name }}</td>
+                                            @if ($users->date_of_birth == "-")
+                                                <td>-</td>
                                             @else
-                                                <td>-</td>
-                                                <td>-</td>
-                                                <td>-</td>
-                                                <td>-</td>
+                                                <td>{{ date_format(date_create($users->date_of_birth), "d-M-Y") }}</td>
                                             @endif
+                                            <td>{{ $users->phone_number }}</td>
                                             <td>{{ $users->email }}</td>
-                                            @if ($users->app_status == "1")
-                                                <td><a class="badge badge-success m-2" href="#">Active</a></td>                            
+                                            @if ($users->status == "Verified")
+                                            <td><a class="badge badge-success m-2" href="#">{{ $users->status }}</a></td>                            
                                             @else
-                                                <td><a class="badge badge-danger m-2" href="#">Inactive</a></td>                            
+                                                <td><a class="badge badge-danger m-2" href="#">{{ $users->status }}</a></td>                            
                                             @endif
-                                            <td style="text-align: center;"><button type="button" class="btn btn-link btn-sm text-primary mr-2" onclick="OpenModalData({{ $users->id }})"><i class="nav-icon i-Files font-weight-bold"></i></button></td>
+                                            <td style="text-align: center;"><button type="button" class="btn btn-link btn-sm text-primary mr-2" onclick="OpenModalData({{ $users->id }}, '{{ $users->status }}')"><i class="nav-icon i-Files font-weight-bold"></i></button></td>
                                         </tr>                                    
                                     @endforeach
                                 </tbody>
@@ -217,7 +212,7 @@
                                     </tr>
                                     <tr>
                                         <th style="width: 30%;">User Status</th>
-                                        <th style="width: 70%;"><span id="modalapp_status"></span></th>
+                                        <th style="width: 70%;"><span id="modalverification_status"></span></th>
                                     </tr>
                                     <tr>
                                         <th style="width: 30%;">Is Admin</th>
@@ -234,67 +229,116 @@
             </div>
         </div>
     </div>    
+    <div class="modal fade" id="showModal2" tabindex="-1" role="dialog" aria-labelledby="showModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="showModalLabel">User Detail</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <table style="width: 100%" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%;">Email</th>
+                                <th style="width: 70%;"><span id="modalemail_2"></span></th>
+                            </tr>
+                            <tr>
+                                <th style="width: 30%;">Nama Pengguna</th>
+                                <th style="width: 70%;"><span id="modalusername_2"></span></th>
+                            </tr>
+                            <tr>
+                                <th style="width: 30%;">Status</th>
+                                <th style="width: 70%;"><span>Not Verified</span></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" type="button" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>    
 @endsection
 
 @section('script')
 <script>
     $('#usersTable').DataTable();
-    var OpenModalData = function(dataid){
+    var OpenModalData = function(dataid, status){
+
+        if (status == "Verified"){
+            var URLName = 'getuserdetail'
+        }else{
+            var URLName = 'getuser_tempdetail'
+        }
+
 		$.ajax({
 			type: 'POST',
-			url: 'getuserdetail',
-			data: {dataid: dataid, _token: '{{csrf_token()}}' },
+			url: URLName,
+			data: {dataid: dataid, status: status, _token: '{{csrf_token()}}' },
 			success: function (data) {
-				var vdata=JSON.parse(data);
+                if (status == "Verified"){
+                    var vdata=JSON.parse(data);
 
-                if (vdata.app_status == "1"){
-                    var app_statusname = "Active";
+                    if (vdata.public_usersid !== null){
+                        var verification_statusname = "Verified";
+                    }else{
+                        var verification_statusname = "Not Verified";
+                    }
+
+                    if (vdata.wfh_status == "1"){
+                        var wfh_statusname = "Active";
+                    }else{
+                        var wfh_statusname = "Inactive";
+                    }
+
+                    $('#modalfull_name').html(vdata.full_name);
+                    $('#modalcompany_name').html(vdata.company_name);
+                    $('#modalposition').html(vdata.position);
+                    $('#modalsuperior_name').html(vdata.superior_name);
+                    $('#modalgender').html(vdata.gender);
+                    $('#modaladdress').html(vdata.address);
+                    $('#modalphone_number').html(vdata.phone_number);
+                    $('#modaldate_of_birth').html(moment(vdata.date_of_birth).format('DD-MMM-YYYY'));
+                    $('#modalwfh_status').html(wfh_statusname);
+                    $('#modalhealth_condition').html(vdata.health_condition);
+                    $('#modaltotal_task').html(vdata.total_task);
+                    $('#modaltotal_task_done').html(vdata.total_task_done);
+                    $('#modalcreated_at').html(moment(vdata.created_at).format('DD-MMM-YYYY HH:mm:ss'));
+                    $('#modalupdated_at').html(moment(vdata.updated_at).format('DD-MMM-YYYY HH:mm:ss'));
+
+                    $('#modalusername').html(vdata.username);
+                    $('#modalemail').html(vdata.email);
+                    $('#modalpassword').html(vdata.password.substr(0, 6) + "...");
+                    $('#modalpin').html(vdata.pin.substr(0, 6) + "...");
+                    $('#modalimei').html(vdata.imei);
+                    $('#modaldevice_name').html(vdata.device_name);
+                    $('#modalverification_status').html(verification_statusname);
+                    if (vdata.is_admin == "1"){
+                        $('#modalis_admin').html("Yes");
+                    }else{
+                        $('#modalis_admin').html("No");
+                    }
                 }else{
-                    var app_statusname = "Inactive";
-                }
+                    var vdata=JSON.parse(data);
 
-                if (vdata.wfh_status == "1"){
-                    var wfh_statusname = "Active";
-                }else{
-                    var wfh_statusname = "Inactive";
-                }
-
-                $('#modalfull_name').html(vdata.full_name);
-                $('#modalcompany_name').html(vdata.company_name);
-                $('#modalposition').html(vdata.position);
-                $('#modalsuperior_name').html(vdata.superior_name);
-                $('#modalgender').html(vdata.gender);
-                $('#modaladdress').html(vdata.address);
-                $('#modalphone_number').html(vdata.phone_number);
-                $('#modaldate_of_birth').html(moment(vdata.date_of_birth).format('DD-MMM-YYYY'));
-                $('#modalwfh_status').html(wfh_statusname);
-                $('#modalhealth_condition').html(vdata.health_condition);
-                $('#modaltotal_task').html(vdata.total_task);
-                $('#modaltotal_task_done').html(vdata.total_task_done);
-                $('#modalcreated_at').html(moment(vdata.created_at).format('DD-MMM-YYYY HH:mm:ss'));
-                $('#modalupdated_at').html(moment(vdata.updated_at).format('DD-MMM-YYYY HH:mm:ss'));
-
-                $('#modalusername').html(vdata.username);
-                $('#modalemail').html(vdata.email);
-                $('#modalpassword').html(vdata.password);
-                $('#modalpin').html(vdata.pin);
-                $('#modalimei').html(vdata.imei);
-                $('#modaldevice_name').html(vdata.device_name);
-                $('#modalapp_status').html(app_statusname);
-                if (vdata.is_admin == "1"){
-                    $('#modalis_admin').html("Yes");
-                }else{
-                    $('#modalis_admin').html("No");
+                    $('#modalemail_2').html(vdata.email);
+                    $('#modalusername_2').html(vdata.username);
                 }
 			}
 		});
 
-        $('#showModal').modal('show');
+        if (status == "Verified"){
+            $('#showModal').modal('show');
+        }else{
+            $('#showModal2').modal('show');
+        }
     };
     var FilterUsers = function(e) {
         event.preventDefault();
 
-        var app_status = $('input[name="app_status"]:checked').val();
+        var verification_statusname = $('input[name="verification_status"]:checked').val();
 
 		var selector = document.getElementById("filterby");
 		var filterby = selector[selector.selectedIndex].value;
@@ -310,31 +354,38 @@
 		$.ajax({
 			type: 'POST',
 			url: 'getusersfilter',
-			data: {filterby: filterby, filtervalue: filtervalue, app_status: app_status, _token: '{{csrf_token()}}' },
+			data: {filterby: filterby, filtervalue: filtervalue, verification_statusname: verification_statusname, _token: '{{csrf_token()}}' },
 			success: function (data) {
                 $(table).DataTable().clear().destroy();
 
 				var vdata_list=JSON.parse(data);
-				vdata_list.forEach(function(vdata){
-                    if (vdata.app_status == "1"){
-                        var color_app_status = "success";
-                        var caption_status = "Active";
+				vdata_list.forEach(function(vdata){                
+                    if (vdata.status == "Verified"){
+                        var color_verification_statusname = "success";
                     }else{
-                        var color_app_status = "danger";
-                        var caption_status = "Inactive";
+                        var color_verification_statusname = "danger";
                     }
+
+                    var full_name = vdata.full_name;
+                    var company_name = vdata.company_name;
+                    if (vdata.date_of_birth == "-"){
+                        var date_of_birth = "-";
+                    }else{
+                        var date_of_birth = moment(vdata.date_of_birth).format('DD-MMM-YYYY');
+                    }
+                    var phone_number = vdata.phone_number;
 
 					var newRow = jQuery(
 							"<tr>" +
                                 "<td scope='row' style='text-align: center;'>" + i + "</td>" +
                                 "<td>" + vdata.username + "</td>" +
-                                "<td>" + vdata.full_name + "</td>" +
-                                "<td>" + vdata.company_name + "</td>" +
-                                "<td>" + moment(vdata.date_of_birth).format('DD-MMM-YYYY') + "</td>" +
-                                "<td>" + vdata.phone_number + "</td>" +
+                                "<td>" + full_name + "</td>" +
+                                "<td>" + company_name + "</td>" +
+                                "<td>" + date_of_birth + "</td>" +
+                                "<td>" + phone_number + "</td>" +
                                 "<td>" + vdata.email + "</td>" +
-                                "<td><a class='badge badge-" + color_app_status + " m-2' href='#'>" + caption_status + "</a></td>" +                        
-                                "<td style='text-align: center;'><button type='button' class='btn btn-link btn-sm text-primary mr-2' onclick='OpenModalData(" + vdata.id + ")'><i class='nav-icon i-Files font-weight-bold'></i></button></td>" +
+                                "<td><a class='badge badge-" + color_verification_statusname + " m-2' href='#'>" + vdata.status + "</a></td>" +                        
+                                "<td style='text-align: center;'><button type='button' class='btn btn-link btn-sm text-primary mr-2' onclick='OpenModalData(" + vdata.id + ", '" + vdata.status + "')'><i class='nav-icon i-Files font-weight-bold'></i></button></td>" +
 							"</tr>");
 					jQuery(table).append(newRow);
                     i++;
